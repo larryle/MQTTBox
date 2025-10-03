@@ -10,6 +10,7 @@ Release Date: October 3, 2025
    - Main process MQTT handling
    - Optimized Web Worker integration
    - Improved application stability
+   - Eliminated manual Web Worker fixes (no more editing node_modules)
 
 2. Build System Updates
    - Multi-platform build optimization
@@ -43,6 +44,7 @@ Linux Platform:
 
 1. Fixed Linux build configuration issues
 2. Improved SSL certificate validation process
+3. Eliminated need for manual Web Worker fixes
 
 ✅ Testing Verification
 ======================
