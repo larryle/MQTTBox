@@ -6,11 +6,10 @@ Release Date: October 3, 2025
 🚀 Improvements
 ===============
 
-1. Enhanced MQTT Architecture
-   - Main process MQTT handling
-   - Optimized Web Worker integration
-   - Improved application stability
-   - Eliminated manual Web Worker fixes (no more editing node_modules)
+1. Electron desktop app support
+   - Added Electron main process and IPC bridge
+   - MQTT handled in main process for stability
+   - Eliminated manual Web Worker fixes
 
 2. Build System Updates
    - Multi-platform build optimization
