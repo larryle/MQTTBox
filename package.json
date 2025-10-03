@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git@github.com:workswithweb/MQTTBox.git"
   },
+  "license": "MIT",
   "main": "main.js",
   "scripts": {
     "start": "gulp",
