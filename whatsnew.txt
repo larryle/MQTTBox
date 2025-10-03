@@ -6,15 +6,15 @@ Release Date: October 3, 2025
 🚀 Major Feature Improvements
 =============================
 
-1. Enhanced MQTT Connection Architecture
-   - Main process MQTT handling for better performance
-   - Optimized Web Worker integration
+1. Fixed Electron MQTT Connection Issues
+   - Resolved "net.isIP is not a function" error
+   - Redirected MQTT connections to main process
    - Improved application stability
 
-2. Advanced SSL/TLS Certificate Support
-   - AWS IoT Core certificate authentication
-   - Support for SSC, CC, CSSC certificate types
-   - Enhanced certificate validation
+2. Enhanced AWS IoT Core Support
+   - Improved certificate authentication reliability
+   - Better error handling for certificate validation
+   - Enhanced connection stability
 
 3. Optimized Electron Integration
    - Streamlined IPC communication
@@ -25,9 +25,9 @@ Release Date: October 3, 2025
 ========================
 
 1. Main Process MQTT Service
-   - Complete MQTT connection lifecycle management
-   - Support for connect, disconnect, publish, subscribe
+   - MQTT connection lifecycle management
    - Connection state monitoring and auto-reconnection
+   - Enhanced error handling
 
 2. Enhanced Build System
    - Streamlined package configuration
