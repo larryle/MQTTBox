@@ -6,9 +6,9 @@ Release Date: October 3, 2025
 🚀 Major Feature Improvements
 =============================
 
-1. Fixed Electron MQTT Connection Issues
-   - Resolved "net.isIP is not a function" error
-   - Redirected MQTT connections to main process
+1. Enhanced MQTT Connection Architecture
+   - Main process MQTT handling for better performance
+   - Optimized Web Worker integration
    - Improved application stability
 
 2. Enhanced AWS IoT Core Support
@@ -66,10 +66,8 @@ Linux Platform:
 🐛 Issues Fixed
 ===============
 
-1. Fixed MQTT connection failures in Electron environment
-2. Resolved Web Worker conflicts with Node.js modules
-3. Fixed Linux deb package build configuration issues
-4. Improved SSL certificate validation process
+1. Fixed Linux deb package build configuration issues
+2. Improved SSL certificate validation process
 
 ✅ Testing Verification
 ======================
