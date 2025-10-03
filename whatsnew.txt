@@ -7,48 +7,43 @@ Release Date: October 3, 2025
 =============================
 
 1. Enhanced MQTT Connection Architecture
-   - Implemented robust main process MQTT handling for better performance
-   - Optimized Web Worker integration for seamless MQTT operations
-   - Significantly improved application stability and compatibility
+   - Main process MQTT handling for better performance
+   - Optimized Web Worker integration
+   - Improved application stability
 
 2. Advanced SSL/TLS Certificate Support
-   - Complete AWS IoT Core certificate authentication integration
-   - Comprehensive support for multiple certificate types: SSC (Server and Client Certificate), CC (Client Certificate), CSSC (Client Self-Signed Certificate)
-   - Intelligent certificate file path validation and error handling
+   - AWS IoT Core certificate authentication
+   - Support for SSC, CC, CSSC certificate types
+   - Enhanced certificate validation
 
 3. Optimized Electron Integration
-   - Streamlined IPC communication between main and renderer processes
-   - Advanced MQTT connection state management with real-time monitoring
-   - Robust error handling and intelligent reconnection mechanisms
+   - Streamlined IPC communication
+   - Real-time connection monitoring
+   - Intelligent reconnection mechanisms
 
 🔧 Technical Improvements
 ========================
 
 1. Main Process MQTT Service
-   - Implemented complete MQTT connection lifecycle management
-   - Support for all MQTT operations: connect, disconnect, publish, subscribe
-   - Added connection state monitoring and automatic reconnection
+   - Complete MQTT connection lifecycle management
+   - Support for connect, disconnect, publish, subscribe
+   - Connection state monitoring and auto-reconnection
 
 2. Enhanced Build System
-   - Streamlined package.json configuration for better maintainability
-   - Added comprehensive author information for enhanced package metadata
-   - Optimized multi-platform build process with improved reliability
+   - Streamlined package configuration
+   - Multi-platform build optimization
+   - Linux deb package support
 
 3. Platform Compatibility
-   - Support for Intel and ARM64 architectures
-   - Support for macOS, Windows, and Linux platforms
-   - Maintained original Web UI functionality
+   - Intel and ARM64 architectures
+   - macOS, Windows, and Linux platforms
+   - Original Web UI functionality maintained
 
 4. Modern Development Stack
-   - Updated to latest stable versions of core dependencies
-   - Improved build performance and reliability
-   - Enhanced security with latest patches
-   - Better development experience with modern tools
-   - Upgraded MQTT library from 2.1.3 to 4.3.8 (2 major versions)
-   - Upgraded Electron from 1.4.11 to 22.0.0 (21 major versions)
-   - Upgraded Gulp from 3.9.1 to 4.0.2 (1 major version)
-   - Added electron-builder 24.6.4 for application packaging
-   - Added vinyl-buffer 1.0.1 for improved build process
+   - MQTT library: 2.1.3 → 4.3.8
+   - Electron: 1.4.11 → 22.0.0
+   - Gulp: 3.9.1 → 4.0.2
+   - Added electron-builder and vinyl-buffer
 
 📦 Build Output
 ===============
@@ -79,23 +74,20 @@ Linux Platform:
 ✅ Testing Verification
 ======================
 
-1. AWS IoT Core connection test - PASSED
-2. MQTT message publish/subscribe test - PASSED
-3. SSL/TLS certificate authentication test - PASSED
-4. Multi-platform build test - PASSED
-5. Modern dependency stack compatibility test - PASSED
-6. Enhanced MQTT 4.x functionality test - PASSED
-7. Latest Electron 22.x features test - PASSED
-8. Improved Gulp 4.x build process test - PASSED
+1. AWS IoT Core connection - PASSED
+2. MQTT publish/subscribe - PASSED
+3. SSL/TLS certificate authentication - PASSED
+4. Multi-platform build - PASSED
+5. MQTT 4.x functionality - PASSED
+6. Electron 22.x features - PASSED
 
 📝 Usage Instructions
 ====================
 
-1. Download the appropriate platform installer
-2. Install or extract the application
-3. Configure MQTT connection parameters
-4. Upload SSL certificate files (if required)
-5. Connect and start using MQTT functionality
+1. Download and install the application
+2. Configure MQTT connection parameters
+3. Upload SSL certificates (if required)
+4. Connect and start using MQTT functionality
 
 🔗 Related Links
 ===============
