@@ -1,0 +1,93 @@
+MQTTBox v0.2.2 Release Notes
+============================
+
+Release Date: October 3, 2025
+
+🚀 Major Feature Improvements
+=============================
+
+1. Fixed MQTT Connection Issues
+   - Resolved "net.isIP is not a function" error in Web Workers
+   - Redirected MQTT connections to Electron main process to avoid Node.js network modules in renderer process
+   - Improved application stability and compatibility
+
+2. Enhanced SSL/TLS Certificate Support
+   - Improved AWS IoT Core certificate authentication functionality
+   - Support for multiple certificate types: SSC (Server and Client Certificate), CC (Client Certificate), CSSC (Client Self-Signed Certificate)
+   - Enhanced certificate file path validation and error handling
+
+3. Improved Electron Integration
+   - Optimized IPC communication between main and renderer processes
+   - Enhanced MQTT connection state management
+   - Improved error handling and reconnection mechanisms
+
+🔧 Technical Improvements
+========================
+
+1. Main Process MQTT Service
+   - Implemented complete MQTT connection lifecycle management
+   - Support for all MQTT operations: connect, disconnect, publish, subscribe
+   - Added connection state monitoring and automatic reconnection
+
+2. Build System Optimization
+   - Fixed package.json configuration issues
+   - Added author email information to support Linux deb package builds
+   - Optimized multi-platform build process
+
+3. Platform Compatibility
+   - Support for Intel and ARM64 architectures
+   - Support for macOS, Windows, and Linux platforms
+   - Maintained original Web UI functionality
+
+📦 Build Output
+===============
+
+macOS Platform:
+- MQTTBox-0.2.2.dmg (Intel Mac)
+- MQTTBox-0.2.2-mac.zip (Intel Mac)
+- MQTTBox-0.2.2-arm64.dmg (Apple Silicon Mac)
+- MQTTBox-0.2.2-arm64-mac.zip (Apple Silicon Mac)
+
+Windows Platform:
+- MQTTBox Setup 0.2.2.exe (Installer)
+- MQTTBox-0.2.2-win.zip (x64)
+- MQTTBox-0.2.2-arm64-win.zip (ARM64)
+
+Linux Platform:
+- MQTTBox-0.2.2.AppImage (x64)
+- MQTTBox-0.2.2-arm64.AppImage (ARM64)
+
+🐛 Issues Fixed
+===============
+
+1. Fixed MQTT connection failures in Electron environment
+2. Resolved Web Worker conflicts with Node.js modules
+3. Fixed Linux deb package build configuration issues
+4. Improved SSL certificate validation process
+
+✅ Testing Verification
+======================
+
+1. AWS IoT Core connection test - PASSED
+2. MQTT message publish/subscribe test - PASSED
+3. SSL/TLS certificate authentication test - PASSED
+4. Multi-platform build test - PASSED
+
+📝 Usage Instructions
+====================
+
+1. Download the appropriate platform installer
+2. Install or extract the application
+3. Configure MQTT connection parameters
+4. Upload SSL certificate files (if required)
+5. Connect and start using MQTT functionality
+
+🔗 Related Links
+===============
+
+- Project Repository: https://github.com/workswithweb/MQTTBox
+- Issue Reporting: workswithweb@gmail.com
+- Download Page: http://workswithweb.com/html/mqttbox/downloads.html
+
+---
+Thank you for using MQTTBox! If you have any questions or suggestions, please feel free to contact us.
