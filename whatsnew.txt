@@ -11,12 +11,7 @@ Release Date: October 3, 2025
    - Optimized Web Worker integration
    - Improved application stability
 
-2. Enhanced AWS IoT Core Support
-   - Improved certificate authentication reliability
-   - Better error handling for certificate validation
-   - Enhanced connection stability
-
-3. Optimized Electron Integration
+2. Optimized Electron Integration
    - Streamlined IPC communication
    - Real-time connection monitoring
    - Intelligent reconnection mechanisms
@@ -72,12 +67,11 @@ Linux Platform:
 ✅ Testing Verification
 ======================
 
-1. AWS IoT Core connection - PASSED
-2. MQTT publish/subscribe - PASSED
-3. SSL/TLS certificate authentication - PASSED
-4. Multi-platform build - PASSED
-5. MQTT 4.x functionality - PASSED
-6. Electron 22.x features - PASSED
+1. MQTT publish/subscribe - PASSED
+2. SSL/TLS certificate authentication - PASSED
+3. Multi-platform build - PASSED
+4. MQTT 4.x functionality - PASSED
+5. Electron 22.x features - PASSED
 
 📝 Usage Instructions
 ====================
