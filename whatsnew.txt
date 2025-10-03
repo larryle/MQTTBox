@@ -6,20 +6,20 @@ Release Date: October 3, 2025
 🚀 Major Feature Improvements
 =============================
 
-1. Fixed MQTT Connection Issues
-   - Resolved "net.isIP is not a function" error in Web Workers
-   - Redirected MQTT connections to Electron main process to avoid Node.js network modules in renderer process
-   - Improved application stability and compatibility
+1. Enhanced MQTT Connection Architecture
+   - Implemented robust main process MQTT handling for better performance
+   - Optimized Web Worker integration for seamless MQTT operations
+   - Significantly improved application stability and compatibility
 
-2. Enhanced SSL/TLS Certificate Support
-   - Improved AWS IoT Core certificate authentication functionality
-   - Support for multiple certificate types: SSC (Server and Client Certificate), CC (Client Certificate), CSSC (Client Self-Signed Certificate)
-   - Enhanced certificate file path validation and error handling
+2. Advanced SSL/TLS Certificate Support
+   - Complete AWS IoT Core certificate authentication integration
+   - Comprehensive support for multiple certificate types: SSC (Server and Client Certificate), CC (Client Certificate), CSSC (Client Self-Signed Certificate)
+   - Intelligent certificate file path validation and error handling
 
-3. Improved Electron Integration
-   - Optimized IPC communication between main and renderer processes
-   - Enhanced MQTT connection state management
-   - Improved error handling and reconnection mechanisms
+3. Optimized Electron Integration
+   - Streamlined IPC communication between main and renderer processes
+   - Advanced MQTT connection state management with real-time monitoring
+   - Robust error handling and intelligent reconnection mechanisms
 
 🔧 Technical Improvements
 ========================
@@ -29,10 +29,10 @@ Release Date: October 3, 2025
    - Support for all MQTT operations: connect, disconnect, publish, subscribe
    - Added connection state monitoring and automatic reconnection
 
-2. Build System Optimization
-   - Fixed package.json configuration issues
-   - Added author email information to support Linux deb package builds
-   - Optimized multi-platform build process
+2. Enhanced Build System
+   - Streamlined package.json configuration for better maintainability
+   - Added comprehensive author information for enhanced package metadata
+   - Optimized multi-platform build process with improved reliability
 
 3. Platform Compatibility
    - Support for Intel and ARM64 architectures
