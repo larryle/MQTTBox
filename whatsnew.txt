@@ -3,42 +3,22 @@ MQTTBox v0.2.2 Release Notes
 
 Release Date: October 3, 2025
 
-🚀 Major Feature Improvements
-=============================
+🚀 Improvements
+===============
 
-1. Enhanced MQTT Connection Architecture
-   - Main process MQTT handling for better performance
+1. Enhanced MQTT Architecture
+   - Main process MQTT handling
    - Optimized Web Worker integration
    - Improved application stability
 
-2. Optimized Electron Integration
-   - Streamlined IPC communication
-   - Real-time connection monitoring
-   - Intelligent reconnection mechanisms
-
-🔧 Technical Improvements
-========================
-
-1. Main Process MQTT Service
-   - MQTT connection lifecycle management
-   - Connection state monitoring and auto-reconnection
-   - Enhanced error handling
-
-2. Enhanced Build System
-   - Streamlined package configuration
+2. Build System Updates
    - Multi-platform build optimization
    - Linux deb package support
+   - Modern dependency stack
 
 3. Platform Compatibility
    - Intel and ARM64 architectures
    - macOS, Windows, and Linux platforms
-   - Original Web UI functionality maintained
-
-4. Modern Development Stack
-   - MQTT library: 2.1.3 → 4.3.8
-   - Electron: 1.4.11 → 22.0.0
-   - Gulp: 3.9.1 → 4.0.2
-   - Added electron-builder and vinyl-buffer
 
 📦 Build Output
 ===============
