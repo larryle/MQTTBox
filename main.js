@@ -35,7 +35,7 @@ function buildMqttOptions(mqttClientObj) {
   if (mqttClientObj.willTopic && mqttClientObj.willTopic.length > 0 && mqttClientObj.willPayload != null) {
     options.will = {
       topic: mqttClientObj.willTopic,
-      payload: mqttClientObj.willPayload,
+      payload: typeof mqttClientObj.willPayload === 'string' ? mqttClientObj.willPayload : JSON.stringify(mqttClientObj.willPayload),
       qos: mqttClientObj.willQos,
       retain: mqttClientObj.willRetain
     };
@@ -95,6 +95,26 @@ function createWindow() {
   const indexPath = path.join(__dirname, 'build', 'index.html');
   const fileUrl = 'file://' + indexPath;
   mainWindow.loadURL(fileUrl);
+
+  try { mainWindow.webContents.openDevTools({ mode: 'detach' }); } catch (e) {}
+
+  try {
+    mainWindow.webContents.on('did-fail-load', (e, code, desc, url) => {
+      console.error('[main][did-fail-load]', code, desc, url);
+    });
+    mainWindow.webContents.on('render-process-gone', (e, details) => {
+      console.error('[main][render-process-gone]', details);
+    });
+    mainWindow.webContents.on('console-message', (e, level, message, line, sourceId) => {
+      try { console.log('[renderer]', level, message, sourceId+':'+line); } catch (_) {}
+    });
+    mainWindow.webContents.on('dom-ready', () => {
+      console.log('[main] DOM ready');
+      try {
+        mainWindow.webContents.executeJavaScript('console.log("[renderer] ping from main")');
+      } catch (_) {}
+    });
+  } catch (_) {}
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -176,7 +196,7 @@ async function tryMigrateFromOldOrigin() {
     const flagFile = path.join(userData, 'migration_from_src_www_build_done');
     if (fs.existsSync(flagFile)) return;
 
-    const oldIndexPath = path.join(__dirname, 'src', 'www', 'build', 'index.html');
+    const oldIndexPath = '/Applications/MQTTBox.app/Contents/Resources/app/build/index.html';
     if (!fs.existsSync(oldIndexPath)) {
       fs.writeFileSync(flagFile, 'no-old-origin');
         return;
@@ -188,26 +208,40 @@ async function tryMigrateFromOldOrigin() {
     });
     await hiddenWin.loadURL('file://' + oldIndexPath);
 
-    // Execute in old origin: read localforage data
+    // Execute in old origin: read localforage data; fallback to window.localStorage
     const script = `
       (function(){
         return new Promise(function(resolve){
           try {
-            var lf = window.localforage || (window.localForage||{});
-            var inst = (lf && lf.createInstance)? lf.createInstance({name:'MQTT_CLIENT_SETTINGS'}) : null;
-            if(!inst){ resolve({items:[], cleared:false}); return; }
             var out=[];
-            inst.iterate(function(v,k){ out.push(v); }).then(function(){
-              // clear only this database instance after reading
-              inst.clear().then(function(){
-                resolve({items:out, cleared:true});
+            var lf = window.localforage || window.localForage;
+            if(lf && lf.createInstance){
+              var inst = lf.createInstance({name:'MQTT_CLIENT_SETTINGS'});
+              inst.iterate(function(v,k){ out.push(v); }).then(function(){
+                inst.clear().then(function(){ resolve({items:out, cleared:true}); })
+                .catch(function(){ resolve({items:out, cleared:false}); });
               }).catch(function(){ resolve({items:out, cleared:false}); });
-            }).catch(function(){ resolve({items:[], cleared:false}); });
+              return;
+            }
+            // Fallback: read likely records from window.localStorage
+            try {
+              var ls = window.localStorage; var lsItems=[];
+              for (var i=0;i<ls.length;i++){
+                var k = ls.key(i);
+                try { var v = JSON.parse(ls.getItem(k)); if(v && v.mcsId){ lsItems.push(v); } } catch(_){ }
+              }
+              // Remove per-record keys to avoid re-import loops
+              for (var j=0;j<lsItems.length;j++){
+                try { var id = lsItems[j] && lsItems[j].mcsId; if(id){ ls.removeItem(id); } } catch(_){ }
+              }
+              resolve({items:lsItems, cleared: lsItems.length>0});
+            } catch(e2){ resolve({items:out, cleared:false}); }
           } catch(e){ resolve({items:[], cleared:false}); }
         });
       })();
     `;
     const data = await hiddenWin.webContents.executeJavaScript(script, true);
+    console.log('[main][migration] items:', data && data.items ? data.items.length : 0, 'cleared:', data && data.cleared);
     if (data && Array.isArray(data.items) && data.items.length > 0 && mainWindow) {
       mainWindow.webContents.send('migration-data', { service: 'MQTT_CLIENT_SETTINGS', items: data.items });
     }

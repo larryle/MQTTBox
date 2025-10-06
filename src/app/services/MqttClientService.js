@@ -91,16 +91,31 @@ class MqttClientService extends Events.EventEmitter {
         MqttClientDbService.getAllMqttClientSettings()
         .then(function(mqttClientList) {
             if(mqttClientList!=null && mqttClientList.length>0) {
-                for(var i=0;i<mqttClientList.length;i++) {
-                    var mqttClientObj = mqttClientList[i];
+                // Deduplicate by name+host+protocol
+                var latestByKey = {};
+                var orderVal = function(x){ return (x && x.updatedOn) || (x && x.createdOn) || 0; };
+                for(var j=0;j<mqttClientList.length;j++){
+                    var c = mqttClientList[j];
+                    if(!c) continue;
+                    var key = (c.mqttClientName||'')+'|'+(c.host||'')+'|'+(c.protocol||'');
+                    if(!latestByKey[key] || orderVal(c) > orderVal(latestByKey[key])){
+                        latestByKey[key] = c;
+                    }
+                }
+
+                this.mqttClientSettings = {};
+                var firstId = null;
+                for (var k in latestByKey){
+                    var mqttClientObj = latestByKey[k];
                     if(mqttClientObj!=null && mqttClientObj.mcsId!=null) {
+                        if(firstId==null) firstId = mqttClientObj.mcsId;
                         this.mqttClientSettings[mqttClientObj.mcsId] = mqttClientObj;
                         if(mqttClientObj.autoConnectOnAppLaunch == true) {
                             PlatformDispatcherService.dispatcherAction({actionType: MqttClientConstants.ACTION_MQTT_CLIENT_CONNECT,data:mqttClientObj},CommonConstants.SERVICE_TYPE_MQTT_CLIENTS);
                         }
                     }
                 }
-                this.emitChange(MqttClientConstants.EVENT_MQTT_CLIENT_DATA_CHANGED,mqttClientList[0].mcsId);
+                this.emitChange(MqttClientConstants.EVENT_MQTT_CLIENT_DATA_CHANGED, firstId);
             }
         }.bind(this));
     }
@@ -178,8 +193,8 @@ class MqttClientService extends Events.EventEmitter {
         dbClientSettingsObj.username = data.username;
         dbClientSettingsObj.password = data.password;
         dbClientSettingsObj.queueQoSZero = data.queueQoSZero;
-        dbClientSettingsObj.willTopic = data.willTopic;
-        dbClientSettingsObj.willPayload = data.willPayload;
+        dbClientSettingsObj.willTopic = data.willTopic || '';
+        dbClientSettingsObj.willPayload = (data.willPayload!=null) ? (''+data.willPayload) : '';
         dbClientSettingsObj.willQos = data.willQos;
         dbClientSettingsObj.willRetain = data.willRetain;
         dbClientSettingsObj.mqttClientName = data.mqttClientName;

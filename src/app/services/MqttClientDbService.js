@@ -55,15 +55,47 @@ class MqttClientDbWorker {
                 electron.ipcRenderer.on('migration-data', function(event, payload){
                     if(payload && payload.service==='MQTT_CLIENT_SETTINGS' && Array.isArray(payload.items)){
                         for(var i=0;i<payload.items.length;i++){
-                            var item = payload.items[i];
-                            if(item && item.mcsId){
-                                try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
-                            }
+                            (function(item){
+                                if(!(item && item.mcsId)) return;
+                                // Map legacy nested will -> top-level
+                                try {
+                                    if (item.will && typeof item.will === 'object') {
+                                        if (item.willTopic == null && item.will.topic != null) item.willTopic = item.will.topic;
+                                        if (item.willPayload == null && item.will.payload != null) item.willPayload = '' + item.will.payload;
+                                        if (item.willQos == null && item.will.qos != null) item.willQos = item.will.qos;
+                                        if (item.willRetain == null && item.will.retain != null) item.willRetain = !!item.will.retain;
+                                    }
+                                    if (item.willPayload == null) item.willPayload = '';
+                                    if (item.willTopic == null) item.willTopic = '';
+                                    if (item.willQos == null) item.willQos = 0;
+                                    if (item.willRetain == null) item.willRetain = false;
+                                } catch(_) {}
+
+                                // Skip if already exists (by mcsId)
+                                try {
+                                    if (this.db && this.db.getItem) {
+                                        this.db.getItem(item.mcsId).then(function(existing){
+                                            if (existing) return; // already present, skip
+                                            try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
+                                        }.bind(this)).catch(function(){
+                                            try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
+                                        });
+                                    } else {
+                                        try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
+                                    }
+                                } catch(_) {
+                                    try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
+                                }
+                            }.bind(this))(payload.items[i]);
                         }
                     }
                 }.bind(this));
             }
         } catch(e) {}
+
+        // Best-effort: one-time merge from IndexedDB instance (older data)
+        // Disable auto-merge to avoid creating duplicates
+        // (kept here commented intentionally for potential manual migration)
     }
 
     saveMqttClientSettings(obj) { 
@@ -75,6 +107,24 @@ class MqttClientDbWorker {
         var mqttClientSettingsList = [];
         if (!this.db || !this.db.iterate) return Promise.resolve([]);
         return this.db.iterate(function(value, key, iterationNumber) {
+            if (value && typeof value === 'object') {
+                // Normalize will fields to avoid undefined/null issues
+                // Map nested 'will' object if present (older data shapes)
+                if (value.will && typeof value.will === 'object') {
+                    if (value.willTopic == null && value.will.topic != null) value.willTopic = value.will.topic;
+                    if (value.willPayload == null && value.will.payload != null) value.willPayload = value.will.payload;
+                    if (value.willQos == null && value.will.qos != null) value.willQos = value.will.qos;
+                    if (value.willRetain == null && value.will.retain != null) value.willRetain = !!value.will.retain;
+                }
+                if (value.willPayload == null) value.willPayload = '';
+                if (value.willTopic == null) value.willTopic = '';
+                if (value.willQos == null) value.willQos = 0;
+                if (value.willRetain == null) value.willRetain = false;
+                // Coerce payload to string
+                if (typeof value.willPayload !== 'string') {
+                    try { value.willPayload = '' + value.willPayload; } catch(_) { value.willPayload = ''; }
+                }
+            }
             mqttClientSettingsList.push(value);
         }).then(function() {
             return _.sortBy(mqttClientSettingsList, ['createdOn']);

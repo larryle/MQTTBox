@@ -8,15 +8,24 @@
   },
   "main": "main.js",
   "scripts": {
-    "start": "gulp",
+    "start": "vite",
     "electron": "electron .",
-    "build": "gulp build",
+    "build": "vite build",
     "icons": "bash scripts/make-icns.sh",
     "pack:mac": "electron-packager . MQTTBox --platform=darwin --arch=x64 --overwrite --out=dist --app-version=$npm_package_version --icon=src/www/images/icon.icns",
-    "dmg:mac": "bash -c 'set -e; APP=\"dist/MQTTBox-darwin-x64/MQTTBox.app\"; VER=\"$npm_package_version\"; OUT=\"dist/MQTTBox-$VER.dmg\"; TMP=\"dist/dmg-tmp\"; rm -rf \"$TMP\"; mkdir -p \"$TMP\"; cp -R \"$APP\" \"$TMP/\"; ln -s /Applications \"$TMP/Applications\"; hdiutil create -volname \"MQTTBox $VER\" -srcfolder \"$TMP\" -ov -format UDZO \"$OUT\"'"
+    "dmg:mac": "bash -c 'set -e; APP=\"dist/MQTTBox-darwin-x64/MQTTBox.app\"; VER=\"$npm_package_version\"; OUT=\"dist/MQTTBox-$VER.dmg\"; TMP=\"dist/dmg-tmp\"; rm -rf \"$TMP\"; mkdir -p \"$TMP\"; cp -R \"$APP\" \"$TMP/\"; ln -s /Applications \"$TMP/Applications\"; hdiutil create -volname \"MQTTBox $VER\" -srcfolder \"$TMP\" -ov -format UDZO \"$OUT\"'",
+    "dist:mac": "electron-builder --mac dmg",
+    "dist:mac:x64": "electron-builder --mac dmg --x64",
+    "dist:mac:arm64": "electron-builder --mac dmg --arm64"
   },
   "private": true,
   "devDependencies": {
+    "@babel/core": "^7.24.9",
+    "@babel/preset-react": "^7.24.7",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@vitejs/plugin-legacy": "^5.4.2",
+    "@vitejs/plugin-react": "^4.3.1",
+    "ansi-colors": "^4.1.3",
     "babel-cli": "^6.18.0",
     "babel-core": "6.20.0",
     "babel-preset-es2015": "6.18.0",
@@ -24,33 +33,56 @@
     "babelify": "7.3.0",
     "browser-sync": "2.18.2",
     "browserify": "13.1.1",
-    "electron": "^1.4.11",
+    "electron": "^28.3.3",
+    "electron-builder": "^24.9.1",
+    "electron-packager": "^17.1.2",
+    "fancy-log": "^2.0.0",
     "gulp": "3.9.1",
     "gulp-notify": "2.2.0",
-    "fancy-log": "^2.0.0",
-    "ansi-colors": "^4.1.3",
     "pretty-hrtime": "1.0.3",
     "require-dir": "0.3.1",
     "underscore": "1.8.3",
     "vinyl-source-stream": "1.1.0",
-    "watchify": "3.7.0",
-    "electron-packager": "^17.1.2"
+    "vite": "^5.4.8",
+    "watchify": "3.7.0"
   },
   "dependencies": {
-    "react": "15.4.1",
-    "react-dom": "15.4.1",
-    "react-router": "3.0.0",
+    "compare-versions": "3.0.0",
+    "fixed-data-table": "0.6.3",
     "flux": "3.1.0",
-    "uuid": "^9.0.0",
+    "getmac": "1.2.1",
     "localforage": "^1.10.0",
-    "mqtt": "3.0.0",
-    "react-copy-to-clipboard": "4.2.3",
-    "qlobber": "0.7.0",
     "lodash": "^4.17.21",
     "moment": "2.17.1",
-    "fixed-data-table": "0.6.3",
+    "mqtt": "3.0.0",
+    "qlobber": "0.7.0",
+    "react": "15.4.1",
+    "react-copy-to-clipboard": "4.2.3",
+    "react-dom": "15.4.1",
+    "react-router": "3.0.0",
     "recharts": "0.19.0",
-    "getmac": "1.2.1",
-    "compare-versions": "3.0.0"
+    "terser": "^5.44.0",
+    "uuid": "^9.0.0"
+  },
+  "build": {
+    "appId": "com.mqttbox.app",
+    "productName": "MQTTBox",
+    "files": [
+      "build/**",
+      "main.js",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "src/www/images/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    }
   }
 }

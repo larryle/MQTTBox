@@ -46,4 +46,4 @@ MqttLoadConstants.LOAD_TIME_OUT = 'Load test timed out.';
 //WORKERS
 MqttLoadConstants.EVENT_WORKER_MQTT_LOAD = 'EVENT_WORKER_MQTT_LOAD';
 
-module.exports = MqttLoadConstants;
+export default MqttLoadConstants;

@@ -28,4 +28,4 @@ MqttClientConstants.CONNECTION_STATE_ERROR = 'CONNECT_ERROR';
 //WORKERS
 MqttClientConstants.EVENT_WORKER_MQTT_CLIENT = 'EVENT_WORKER_MQTT_CLIENT';
 
-module.exports = MqttClientConstants;
+export default MqttClientConstants;
