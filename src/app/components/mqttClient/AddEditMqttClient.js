@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import UUID from 'node-uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import LeftMenuButton from '../common/LeftMenuButton';
 import ExternalLink from '../common/ExternalLink';
@@ -77,7 +77,7 @@ class AddEditMqttClient extends Component {
     }
 
     generateMqttClientId() {
-        this.setState({mqttClientId:UUID.v4()});
+        this.setState({mqttClientId:uuidv4()});
     }
 
     onMqtt311CompliantChange(event) {

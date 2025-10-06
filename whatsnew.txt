@@ -1,0 +1,39 @@
+==========================
+MQTTBox – What’s New
+==========================
+
+MQTTBox 0.2.2， 2025-10-07
+-------------------------
+Summary
+- First working macOS build and versioned DMG packaging.
+- Electron main process (`main.js`) added with standard menus and paste shortcuts.
+- MQTT over TCP/TLS handled in main process via IPC → stable subscriber updates.
+- Storage stability: `localforage` driver order adjusted to avoid “No available storage method found”.
+- Eclipse performance improved by excluding heavy folders from indexing.
+
+Added
+- Packaging scripts: `icons` (make-icns), `pack:mac`, `dmg:mac`.
+- macOS icon assets: `src/www/images/icon.icns`, `build-icons.iconset/`.
+- Electron app entry: `main.js` and `"main": "main.js"` in package.json.
+
+Changed
+- Platform detection set to `ELECTRON_APP` for desktop-only features (TCP/TLS).
+- MQTT flow routed through Electron main (Node `mqtt`) using IPC.
+- `MqttClientSubscriber` message rendering hardened for unexpected payloads.
+- `gulpfile.js` updated to avoid deprecated patterns and improve Node compatibility.
+- `.gitignore` updated to ignore `dist/` artifacts.
+
+Removed
+- Dependency: `request@2.79.0` (deprecated).
+
+Dependencies – precise changes
+- Replaced: `node-uuid@1.4.7` → `uuid@^9.0.0`.
+- Added (dev): `electron-packager@^17.1.2`, `fancy-log@^2.0.0`, `ansi-colors@^4.1.3`.
+- Unchanged (key): `electron@^1.4.11`, `mqtt@2.1.3`, `react@15.4.1`, `localforage@1.4.3`.
+
+Notes
+- Use scripts to build/package on macOS: `npm run build`, `npm run pack:mac`, `npm run dmg:mac`.
+
+MQTTBox 0.2.1 – 2019-03-29
+--------------------------------
+Original Version from: https://github.com/workswithweb/MQTTBox)

@@ -1,6 +1,6 @@
 import Events from 'events';
 import _ from 'lodash';
-import UUID from 'node-uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import MqttLoadConstants from '../utils/MqttLoadConstants';

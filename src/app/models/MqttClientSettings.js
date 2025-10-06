@@ -1,4 +1,4 @@
-import UUID from 'node-uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 class MqttClientSettings {
     constructor() {
@@ -9,7 +9,7 @@ class MqttClientSettings {
         this.mqtt311Compliant = true;
         this.keepalive = 10;
         this.reschedulePings = true;
-        this.mqttClientId = UUID.v4();
+        this.mqttClientId = uuidv4();
         this.timestampClientId = true;
         this.protocolId = 'MQTT';
         this.protocolVersion = 4;
@@ -37,7 +37,7 @@ class MqttClientSettings {
         this.willQos = 0;
         this.willRetain = false;
 
-        this.mcsId = UUID.v4();
+        this.mcsId = uuidv4();
         this.mqttClientName = '';
         this.tag='';
         this.publishSettings = [];

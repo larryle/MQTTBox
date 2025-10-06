@@ -1,8 +1,8 @@
-import UUID from 'node-uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 class PublisherSettings {
     constructor() {
-        this.pubId = UUID.v4();
+        this.pubId = uuidv4();
         this.topic = '';
         this.qos = 0;
         this.retain = false;
