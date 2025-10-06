@@ -4,3 +4,5 @@ build
 .idea
 mqttbox/
 .DS_Store
+
+doc/keys/*.p8
