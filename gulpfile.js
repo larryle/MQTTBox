@@ -10,7 +10,11 @@
   when you run `gulp`.
 */
 
-var requireDir = require('require-dir');
-
-// Require all tasks in gulp/tasks, including subfolders
-requireDir('./gulp/tasks', { recurse: true });
+// Explicitly require task files to avoid require-dir compatibility issues
+require('./gulp/tasks/browserSync');
+require('./gulp/tasks/browserify');
+require('./gulp/tasks/build');
+require('./gulp/tasks/default');
+require('./gulp/tasks/markup');
+require('./gulp/tasks/setWatch');
+require('./gulp/tasks/watch');

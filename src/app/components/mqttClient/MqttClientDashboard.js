@@ -140,7 +140,6 @@ class MqttClientDashboard extends Component {
                                     </button>
                                 </li>
                                 <li>
-
                                 </li>
                             </ul>
                         </div>
@@ -158,6 +157,7 @@ class MqttClientDashboard extends Component {
             </div>
         );
     }
+
 }
 
 export default MqttClientDashboard;

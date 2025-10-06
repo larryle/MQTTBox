@@ -1,0 +1,8 @@
+{
+  "title": "MQTTBox",
+  "icon-size": 128,
+  "contents": [
+    { "x": 130, "y": 220, "type": "file", "path": "dist/MQTTBox-darwin-x64/MQTTBox.app" },
+    { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+  ]
+}

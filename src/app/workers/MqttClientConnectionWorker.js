@@ -65,8 +65,21 @@ class MqttClientConnectionWorker extends Events.EventEmitter {  
 
     connectToBroker() {
         if(this.mqttClientObj!=null && this.mqttClientObj.mcsId!=null) {
+            const url = this.mqttClientObj.protocol+'://'+this.mqttClientObj.host;
+            const options = this.getConnectOptions();
+            try {
+                console.log('[MQTT] connecting', { url, options });
+            } catch(e) {}
+            // If Electron IPC bridge is available, prefer it
+            try {
+                const electron = (typeof window !== 'undefined' && window.require) ? window.require('electron') : null;
+                if (electron && electron.ipcRenderer) {
+                    electron.ipcRenderer.send('mqtt-connect', this.mqttClientObj);
+                    return;
+                }
+            } catch(_) {}
 
-            this.client = mqtt.connect(this.mqttClientObj.protocol+'://'+this.mqttClientObj.host,this.getConnectOptions());
+            this.client = mqtt.connect(url, options);
 
             this.client.on('connect', function () {
                 this.publishClientConnectionStatus(MqttClientConstants.CONNECTION_STATE_CONNECTED);
@@ -83,6 +96,9 @@ class MqttClientConnectionWorker extends Events.EventEmitter {  
             }.bind(this));
 
             this.client.on('error', function (err) {
+                try {
+                    console.error('[MQTT] error', err && err.message ? err.message : err);
+                } catch(e) {}
                 this.publishClientConnectionStatus(MqttClientConstants.CONNECTION_STATE_ERROR);
             }.bind(this));
 
