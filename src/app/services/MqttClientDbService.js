@@ -1,6 +1,5 @@
 import localforage from 'localforage';
 import MqttClientActions from '../actions/MqttClientActions';
-import Q from 'q';
 import _ from 'lodash';
 
 class MqttClientDbWorker { 
@@ -68,23 +67,23 @@ class MqttClientDbWorker {
     }
 
     saveMqttClientSettings(obj) { 
-        Q.invoke(this.db,'setItem',obj.mcsId,obj).done();
+        if (!this.db || !this.db.setItem) return Promise.resolve();
+        return this.db.setItem(obj.mcsId, obj);
     }
 
     getAllMqttClientSettings() { 
-        var me =this;
         var mqttClientSettingsList = [];
-        return Q.invoke(this.db,'iterate',
-            function(value, key, iterationNumber) {
-                mqttClientSettingsList.push(value);
-            }
-        ).then(function() {
+        if (!this.db || !this.db.iterate) return Promise.resolve([]);
+        return this.db.iterate(function(value, key, iterationNumber) {
+            mqttClientSettingsList.push(value);
+        }).then(function() {
             return _.sortBy(mqttClientSettingsList, ['createdOn']);
         });
     }
 
     deleteMqttClientSettingsById(mcsId) {
-        return Q.invoke(this.db,'removeItem',mcsId).done();
+        if (!this.db || !this.db.removeItem) return Promise.resolve();
+        return this.db.removeItem(mcsId);
     }
 }
 

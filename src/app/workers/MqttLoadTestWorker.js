@@ -1,4 +1,3 @@
-import Q from 'q';
 import _ from 'lodash';
 import mqtt from 'mqtt';
 import Events from 'events';

@@ -1,5 +1,4 @@
 import localforage from 'localforage';
-import Q from 'q';
 import _ from 'lodash';
 
 class MqttLoadDbService {  
@@ -43,27 +42,28 @@ class MqttLoadDbService {  
     }
 
     saveMqttLoadSettings(obj) { 
-        Q.invoke(this.loadSettingsDb,'setItem',obj.mcsId,obj).done();
+        if (!this.loadSettingsDb || !this.loadSettingsDb.setItem) return Promise.resolve();
+        return this.loadSettingsDb.setItem(obj.mcsId, obj);
     }
 
     getAllMqttLoadSettings() { 
-        var me =this;
         var mqttLoadSettingsList = [];
-        return Q.invoke(this.loadSettingsDb,'iterate',
-            function(value, key, iterationNumber) {
-                mqttLoadSettingsList.push(value);
-            }
-        ).then(function() {
+        if (!this.loadSettingsDb || !this.loadSettingsDb.iterate) return Promise.resolve([]);
+        return this.loadSettingsDb.iterate(function(value, key, iterationNumber) {
+            mqttLoadSettingsList.push(value);
+        }).then(function() {
             return _.sortBy(mqttLoadSettingsList, ['createdOn']);
         });
     }
 
     deleteMqttLoadSettingsById(mcsId) {
-        return Q.invoke(this.loadSettingsDb,'removeItem',mcsId).done();
+        if (!this.loadSettingsDb || !this.loadSettingsDb.removeItem) return Promise.resolve();
+        return this.loadSettingsDb.removeItem(mcsId);
     }
 
     deleteMqttLoadDataByInstanceId(iId) {
-        return Q.invoke(this.loadInstanceDataDb,'removeItem',iId).done();
+        if (!this.loadInstanceDataDb || !this.loadInstanceDataDb.removeItem) return Promise.resolve();
+        return this.loadInstanceDataDb.removeItem(iId);
     }
 
     getMqttLoadDataByIIds(iIds) {
@@ -73,9 +73,10 @@ class MqttLoadDbService {  
     }
 
     saveMqttLoadArchiveDataByIId(iId,archiveData) {
-        if(iId!=null && archiveData!=null) {
-            Q.invoke(this.loadInstanceDataDb,'setItem',iId,archiveData).done();
+        if(iId!=null && archiveData!=null && this.loadInstanceDataDb && this.loadInstanceDataDb.setItem) {
+            return this.loadInstanceDataDb.setItem(iId, archiveData);
         }
+        return Promise.resolve();
     }
 }
 

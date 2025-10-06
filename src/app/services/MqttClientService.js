@@ -102,8 +102,7 @@ class MqttClientService extends Events.EventEmitter {
                 }
                 this.emitChange(MqttClientConstants.EVENT_MQTT_CLIENT_DATA_CHANGED,mqttClientList[0].mcsId);
             }
-        }.bind(this))
-        .done();
+        }.bind(this));
     }
 
     syncMqttClientStateCache(connStateObj) { 

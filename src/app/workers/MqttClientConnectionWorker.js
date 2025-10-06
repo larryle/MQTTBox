@@ -1,4 +1,3 @@
-import Q from 'q';
 import {Qlobber} from 'qlobber';
 import _ from 'lodash';
 import mqtt from 'mqtt';
@@ -177,10 +176,13 @@ class MqttClientConnectionWorker extends Events.EventEmitter {  
     connect(newMqttClient) {
         this.mqttClientObj = newMqttClient;
         if(this.client!=null) {
-            Q.invoke(this.client,'end',true)
-            .then(function() {
+            try {
+                this.client.end(true, function(){
+                    this.connectToBroker();
+                }.bind(this));
+            } catch(e) {
                 this.connectToBroker();
-            }.bind(this));
+            }
         } else {
             this.connectToBroker();
         }
@@ -189,10 +191,13 @@ class MqttClientConnectionWorker extends Events.EventEmitter {  
     disConnect() {
         this.isDisconnecting =true;
         if(this.client!=null) {
-            Q.invoke(this.client,'end',true)
-            .then(function() {
+            try {
+                this.client.end(true, function(){
+                    this.emitChange({event:MqttClientConstants.EVENT_MQTT_CLIENT_CONNECTION_CLOSED, data:{mcsId:this.mqttClientObj.mcsId}});
+                }.bind(this));
+            } catch(e) {
                 this.emitChange({event:MqttClientConstants.EVENT_MQTT_CLIENT_CONNECTION_CLOSED, data:{mcsId:this.mqttClientObj.mcsId}});
-            }.bind(this));
+            }
         } else {
             this.emitChange({event:MqttClientConstants.EVENT_MQTT_CLIENT_CONNECTION_CLOSED, data:{mcsId:this.mqttClientObj.mcsId}});
         }

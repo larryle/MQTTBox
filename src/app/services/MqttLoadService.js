@@ -51,8 +51,7 @@ class MqttLoadService extends Events.EventEmitter {
                 }
                 this.emitChange(MqttLoadConstants.EVENT_MQTT_LOAD_SETTINGS_CHANGED,mqttLoadList[0].mcsId);
             }
-        }.bind(this))
-        .done();
+        }.bind(this));
     }
 
     saveMqttLoadSettings(loadObj) { 
