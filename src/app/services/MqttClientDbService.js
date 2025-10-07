@@ -52,11 +52,15 @@ class MqttClientDbWorker {
             // Listen for migration payload from main process (Electron)
             const electron = require('electron');
             if (electron && electron.ipcRenderer) {
+                console.log('[renderer][migration] setting up listener');
                 electron.ipcRenderer.on('migration-data', function(event, payload){
+                    console.log('[renderer][migration] received payload:', payload);
                     if(payload && payload.service==='MQTT_CLIENT_SETTINGS' && Array.isArray(payload.items)){
+                        console.log('[renderer][migration] processing', payload.items.length, 'items');
                         for(var i=0;i<payload.items.length;i++){
                             (function(item){
                                 if(!(item && item.mcsId)) return;
+                                console.log('[renderer][migration] processing item:', item.mqttClientName, item.mcsId, 'willTopic:', item.willTopic, 'willPayload:', item.willPayload);
                                 // Map legacy nested will -> top-level
                                 try {
                                     if (item.will && typeof item.will === 'object') {

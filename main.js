@@ -61,21 +61,32 @@ function buildMqttOptions(mqttClientObj) {
 }
 
 function wireClientEvents(mcsId, client, win) {
+  // Helper function to safely send events
+  const safeSend = (event, data) => {
+    try {
+      if (win && !win.isDestroyed() && win.webContents && !win.webContents.isDestroyed()) {
+        win.webContents.send(event, data);
+      }
+    } catch (e) {
+      // Ignore errors when window is destroyed
+    }
+  };
+
   client.on('connect', () => {
-    win.webContents.send('mqtt-events', { event: 'EVENT_MQTT_CLIENT_CONN_STATE_CHANGED', data: { mcsId, connState: 'CONNECTED' } });
+    safeSend('mqtt-events', { event: 'EVENT_MQTT_CLIENT_CONN_STATE_CHANGED', data: { mcsId, connState: 'CONNECTED' } });
   });
   client.on('close', () => {
-    win.webContents.send('mqtt-events', { event: 'EVENT_MQTT_CLIENT_CONN_STATE_CHANGED', data: { mcsId, connState: 'ERROR' } });
+    safeSend('mqtt-events', { event: 'EVENT_MQTT_CLIENT_CONN_STATE_CHANGED', data: { mcsId, connState: 'ERROR' } });
   });
   client.on('offline', () => {
-    win.webContents.send('mqtt-events', { event: 'EVENT_MQTT_CLIENT_CONN_STATE_CHANGED', data: { mcsId, connState: 'ERROR' } });
+    safeSend('mqtt-events', { event: 'EVENT_MQTT_CLIENT_CONN_STATE_CHANGED', data: { mcsId, connState: 'ERROR' } });
   });
   client.on('error', (err) => {
-    win.webContents.send('mqtt-events', { event: 'EVENT_MQTT_CLIENT_CONN_STATE_CHANGED', data: { mcsId, connState: 'ERROR', error: (err && err.message) || String(err) } });
+    safeSend('mqtt-events', { event: 'EVENT_MQTT_CLIENT_CONN_STATE_CHANGED', data: { mcsId, connState: 'ERROR', error: (err && err.message) || String(err) } });
   });
   client.on('message', (topic, message, packet) => {
     try { console.log('[main][mqtt] message', topic); } catch(e) {}
-    win.webContents.send('mqtt-events', { event: 'EVENT_MQTT_CLIENT_SUBSCRIBED_DATA_RECIEVED', data: { mcsId, topic, message: String(message), packet } });
+    safeSend('mqtt-events', { event: 'EVENT_MQTT_CLIENT_SUBSCRIBED_DATA_RECIEVED', data: { mcsId, topic, message: String(message), packet } });
   });
 }
 
@@ -196,11 +207,27 @@ async function tryMigrateFromOldOrigin() {
     const flagFile = path.join(userData, 'migration_from_src_www_build_done');
     if (fs.existsSync(flagFile)) return;
 
-    const oldIndexPath = '/Applications/MQTTBox.app/Contents/Resources/app/build/index.html';
-    if (!fs.existsSync(oldIndexPath)) {
-      fs.writeFileSync(flagFile, 'no-old-origin');
-        return;
+    // Try multiple possible paths for old app data (based on commit 90fe880 analysis)
+    const possiblePaths = [
+      '/Applications/MQTTBox.app/Contents/Resources/app/build/index.html', // Installed app
+      path.join(__dirname, 'src', 'www', 'build', 'index.html'), // Development build (commit 90fe880)
+      path.join(__dirname, 'build', 'index.html') // Current build
+    ];
+    
+    let oldIndexPath = null;
+    for (const testPath of possiblePaths) {
+      if (fs.existsSync(testPath)) {
+        oldIndexPath = testPath;
+        console.log('[main][migration] found old data at:', testPath);
+        break;
       }
+    }
+    
+    if (!oldIndexPath) {
+      console.log('[main][migration] no old data found at any expected location');
+      fs.writeFileSync(flagFile, 'no-old-origin');
+      return;
+    }
       
     const hiddenWin = new BrowserWindow({
       show: false,
@@ -208,42 +235,82 @@ async function tryMigrateFromOldOrigin() {
     });
     await hiddenWin.loadURL('file://' + oldIndexPath);
 
-    // Execute in old origin: read localforage data; fallback to window.localStorage
+    // Execute in old origin: read localforage data (commit 90fe880 format)
     const script = `
       (function(){
         return new Promise(function(resolve){
           try {
-            var out=[];
+            var out=[], debug={};
             var lf = window.localforage || window.localForage;
+            debug.hasLocalforage = !!lf;
+            debug.hasCreateInstance = !!(lf && lf.createInstance);
+            
             if(lf && lf.createInstance){
-              var inst = lf.createInstance({name:'MQTT_CLIENT_SETTINGS'});
-              inst.iterate(function(v,k){ out.push(v); }).then(function(){
-                inst.clear().then(function(){ resolve({items:out, cleared:true}); })
-                .catch(function(){ resolve({items:out, cleared:false}); });
-              }).catch(function(){ resolve({items:out, cleared:false}); });
-              return;
+              try {
+                var inst = lf.createInstance({name:'MQTT_CLIENT_SETTINGS'});
+                debug.localforageInstance = !!inst;
+                inst.iterate(function(v,k){ 
+                  debug.localforageItem = {key:k, hasMcId:!!(v && v.mcsId), willTopic:!!(v && v.willTopic), willPayload:!!(v && v.willPayload)};
+                  out.push(v); 
+                }).then(function(){
+                  debug.localforageCount = out.length;
+                  inst.clear().then(function(){ 
+                    resolve({items:out, cleared:true, debug:debug}); 
+                  }).catch(function(){ 
+                    resolve({items:out, cleared:false, debug:debug}); 
+                  });
+                }).catch(function(e){ 
+                  debug.localforageError = e.message;
+                  resolve({items:out, cleared:false, debug:debug}); 
+                });
+                return;
+              } catch(e) {
+                debug.localforageCreateError = e.message;
+              }
             }
-            // Fallback: read likely records from window.localStorage
+            
+            // Fallback: read from window.localStorage
             try {
-              var ls = window.localStorage; var lsItems=[];
+              var ls = window.localStorage; 
+              debug.localStorageLength = ls.length;
+              var lsItems=[];
               for (var i=0;i<ls.length;i++){
                 var k = ls.key(i);
-                try { var v = JSON.parse(ls.getItem(k)); if(v && v.mcsId){ lsItems.push(v); } } catch(_){ }
+                try { 
+                  var v = JSON.parse(ls.getItem(k)); 
+                  if(v && v.mcsId){ 
+                    debug.localStorageItem = {key:k, hasMcId:true, willTopic:!!v.willTopic, willPayload:!!v.willPayload};
+                    lsItems.push(v); 
+                  } 
+                } catch(e){ debug.localStorageParseError = e.message; }
               }
+              debug.localStorageCount = lsItems.length;
+              
               // Remove per-record keys to avoid re-import loops
               for (var j=0;j<lsItems.length;j++){
                 try { var id = lsItems[j] && lsItems[j].mcsId; if(id){ ls.removeItem(id); } } catch(_){ }
               }
-              resolve({items:lsItems, cleared: lsItems.length>0});
-            } catch(e2){ resolve({items:out, cleared:false}); }
-          } catch(e){ resolve({items:[], cleared:false}); }
+              resolve({items:lsItems, cleared: lsItems.length>0, debug:debug});
+            } catch(e2){ 
+              debug.localStorageError = e2.message;
+              resolve({items:out, cleared:false, debug:debug}); 
+            }
+          } catch(e){ 
+            resolve({items:[], cleared:false, debug:{error:e.message}}); 
+          }
         });
       })();
     `;
     const data = await hiddenWin.webContents.executeJavaScript(script, true);
     console.log('[main][migration] items:', data && data.items ? data.items.length : 0, 'cleared:', data && data.cleared);
+    if (data && data.debug) {
+      console.log('[main][migration] debug:', JSON.stringify(data.debug, null, 2));
+    }
     if (data && Array.isArray(data.items) && data.items.length > 0 && mainWindow) {
+      console.log('[main][migration] sending data to renderer:', data.items.length, 'items');
       mainWindow.webContents.send('migration-data', { service: 'MQTT_CLIENT_SETTINGS', items: data.items });
+    } else {
+      console.log('[main][migration] no data to send or mainWindow not ready');
     }
     hiddenWin.destroy();
     fs.writeFileSync(flagFile, 'done');
@@ -328,7 +395,25 @@ app.on('ready', async () => {
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+  // Clean up all MQTT clients before quitting
+  try {
+    clients.forEach((client, mcsId) => {
+      try {
+        if (client && typeof client.end === 'function') {
+          client.end();
+        }
+      } catch (e) {
+        // Ignore cleanup errors
+      }
+    });
+    clients.clear();
+  } catch (e) {
+    // Ignore cleanup errors
+  }
+  
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 });
 
 app.on('activate', () => {

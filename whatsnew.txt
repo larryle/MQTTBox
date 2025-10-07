@@ -2,37 +2,47 @@
 MQTTBox – What’s New
 ==========================
 
-MQTTBox 0.2.2， 2025-10-07
+MQTTBox 0.2.2 – 2025-10-07
 -------------------------
 Summary
-- First working macOS build and versioned DMG packaging.
-- Electron main process (`main.js`) added with standard menus and paste shortcuts.
-- MQTT over TCP/TLS handled in main process via IPC → stable subscriber updates.
-- Storage stability: `localforage` driver order adjusted to avoid “No available storage method found”.
-- Eclipse performance improved by excluding heavy folders from indexing.
+- Major Electron upgrade from 1.4.11 to 28.3.3 for modern compatibility.
+- Enhanced data migration logic supporting multiple source paths for seamless upgrade.
+- Fixed MQTT client cleanup and "Object has been destroyed" errors on app shutdown.
+- Improved Will field mapping and deduplication during data import.
+- Added comprehensive debug logging for migration and MQTT events.
 
 Added
-- Packaging scripts: `icons` (make-icns), `pack:mac`, `dmg:mac`.
-- macOS icon assets: `src/www/images/icon.icns`, `build-icons.iconset/`.
-- Electron app entry: `main.js` and `"main": "main.js"` in package.json.
+- Multi-path migration detection: installed app, development build, and current build.
+- Safe event sending with window state validation to prevent crashes.
+- Enhanced migration debug logging with detailed data structure analysis.
+- Vite build system support alongside existing Gulp configuration.
+- Electron-builder configuration for modern packaging with arm64/x64 support.
 
 Changed
-- Platform detection set to `ELECTRON_APP` for desktop-only features (TCP/TLS).
-- MQTT flow routed through Electron main (Node `mqtt`) using IPC.
-- `MqttClientSubscriber` message rendering hardened for unexpected payloads.
-- `gulpfile.js` updated to avoid deprecated patterns and improve Node compatibility.
-- `.gitignore` updated to ignore `dist/` artifacts.
+- **Electron**: 1.4.11 → 28.3.3 (major upgrade across 27 major versions).
+- **localforage**: 1.7.3 → 1.10.0 with improved storage configuration.
+- **lodash**: 4.17.2 → 4.17.21 (security patches).
+- **mqtt**: 2.18.8 → 3.0.0 (modern MQTT client library).
+- **uuid**: node-uuid → uuid@9.0.0 (modern UUID generation).
+- Module system: CommonJS → ES6 modules for better compatibility.
+- MQTT event handling: added window destruction checks for safe cleanup.
 
 Removed
-- Dependency: `request@2.79.0` (deprecated).
+- **q**: Promise library → using native Promises.
+- **sqlite3**: Native SQLite → using localforage storage.
+- **gulp-util**: Deprecated → fancy-log + ansi-colors.
+- **request**: Deprecated HTTP client.
 
 Dependencies – precise changes
-- Replaced: `node-uuid@1.4.7` → `uuid@^9.0.0`.
-- Added (dev): `electron-packager@^17.1.2`, `fancy-log@^2.0.0`, `ansi-colors@^4.1.3`.
-- Unchanged (key): `electron@^1.4.11`, `mqtt@2.1.3`, `react@15.4.1`, `localforage@1.4.3`.
+- **Core upgrades**: electron@^28.3.3, localforage@^1.10.0, lodash@^4.17.21, mqtt@3.0.0, uuid@^9.0.0.
+- **Build tools**: electron-builder@^24.9.1, electron-packager@^17.1.2.
+- **Development**: @vitejs/plugin-legacy@^5.4.2, @babel/core@^7.24.9, @babel/preset-react@^7.24.7.
+- **Removed**: q@1.4.1, sqlite3, gulp-util, request@2.79.0.
 
 Notes
-- Use scripts to build/package on macOS: `npm run build`, `npm run pack:mac`, `npm run dmg:mac`.
+- Use `npm run build` for development, `npm run dist:mac` for production builds.
+- Supports both Intel (x64) and Apple Silicon (arm64) architectures.
+- Automatic data migration from previous versions with Will field preservation.
 
 MQTTBox 0.2.1 – 2019-03-29
 --------------------------------
