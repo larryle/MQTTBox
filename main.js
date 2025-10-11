@@ -107,7 +107,10 @@ function createWindow() {
   const fileUrl = 'file://' + indexPath;
   mainWindow.loadURL(fileUrl);
 
-  try { mainWindow.webContents.openDevTools({ mode: 'detach' }); } catch (e) {}
+  // Only open DevTools in development mode
+  if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
+    try { mainWindow.webContents.openDevTools({ mode: 'detach' }); } catch (e) {}
+  }
 
   try {
     mainWindow.webContents.on('did-fail-load', (e, code, desc, url) => {

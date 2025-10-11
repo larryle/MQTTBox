@@ -40,7 +40,9 @@ class MqttClientList extends Component {
     }
 
     getAllMqttClientSettings() {
-        this.setState({mqttClientSettings:MqttClientService.getAllMqttClientSettings()});
+        const clients = MqttClientService.getAllMqttClientSettings();
+        console.log('[MqttClientList] getAllMqttClientSettings called, clients:', clients.length, clients);
+        this.setState({mqttClientSettings: clients});
     }
 
     componentDidMount() {
