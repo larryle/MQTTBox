@@ -2,6 +2,10 @@
   "name": "MQTTBox",
   "version": "0.2.2",
   "description": "MQTTBox - Developers helper program to create and test MQTT connectivity protocol.",
+  "author": {
+    "name": "Larry",
+    "email": "linfengle@gmail.com"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:workswithweb/MQTTBox.git"
@@ -19,7 +23,11 @@
     "dist:mac:arm64": "electron-builder --mac dmg --arm64",
     "dist:win": "electron-builder --win --config.compression=store && rm -rf dist/win-unpacked && rm -f dist/*.blockmap",
     "dist:win:x64": "electron-builder --win --x64 --config.compression=store && rm -rf dist/win-unpacked && rm -f dist/*.blockmap",
-    "dist:win:ia32": "electron-builder --win --ia32 --config.compression=store && rm -rf dist/win-unpacked && rm -f dist/*.blockmap"
+    "dist:win:ia32": "electron-builder --win --ia32 --config.compression=store && rm -rf dist/win-unpacked && rm -f dist/*.blockmap",
+    "dist:linux": "electron-builder --linux --config.compression=store && rm -rf dist/linux-unpacked && rm -f dist/*.blockmap",
+    "dist:linux:x64": "electron-builder --linux --x64 --config.compression=store && rm -rf dist/linux-unpacked && rm -f dist/*.blockmap",
+    "dist:linux:arm64": "electron-builder --linux --arm64 --config.compression=store && rm -rf dist/linux-unpacked && rm -f dist/*.blockmap",
+    "dist:ubuntu": "electron-builder --linux --x64 --config.compression=store && rm -rf dist/linux-unpacked && rm -f dist/*.blockmap"
   },
   "private": true,
   "devDependencies": {
@@ -99,6 +107,35 @@
       "icon": "src/www/images/icon.ico",
       "requestedExecutionLevel": "asInvoker",
       "artifactName": "MQTTBox-${version}-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "src/www/images/mqttbox.png",
+      "category": "Development",
+      "description": "MQTT Client Tool",
+      "synopsis": "MQTT Client Tool for testing and development",
+      "desktop": {
+        "Name": "MQTTBox",
+        "Comment": "MQTT Client Tool for testing and development",
+        "Keywords": "mqtt;client;testing;development;",
+        "StartupNotify": "true",
+        "StartupWMClass": "MQTTBox",
+        "Icon": "mqttbox"
+      },
+      "executableName": "MQTTBox"
     },
     "nsis": {
       "oneClick": true,
