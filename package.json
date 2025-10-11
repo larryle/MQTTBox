@@ -47,13 +47,13 @@
     "watchify": "3.7.0"
   },
   "dependencies": {
-    "compare-versions": "3.0.0",
+    "compare-versions": "^6.1.1",
     "fixed-data-table": "0.6.3",
     "flux": "3.1.0",
-    "getmac": "1.2.1",
+    "getmac": "^6.6.0",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
-    "moment": "2.17.1",
+    "moment": "^2.29.4",
     "mqtt": "3.0.0",
     "qlobber": "0.7.0",
     "react": "15.4.1",

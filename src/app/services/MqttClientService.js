@@ -87,18 +87,22 @@ class MqttClientService extends Events.EventEmitter {
         this.mqttClientPublishedMessages[data.mcsId+data.pubId] = pubMess;
     }
 
-    syncMqttClientSettingsCache() { 
+    syncMqttClientSettingsCache() { 
         MqttClientDbService.getAllMqttClientSettings()
         .then(function(mqttClientList) {
             if(mqttClientList!=null && mqttClientList.length>0) {
-                // Deduplicate by name+host+protocol
+                // Deduplicate by name+host+protocol, but prefer versions with more publishers
                 var latestByKey = {};
                 var orderVal = function(x){ return (x && x.updatedOn) || (x && x.createdOn) || 0; };
+                var publisherCount = function(x){ return (x && x.publishSettings && x.publishSettings.length) || 0; };
                 for(var j=0;j<mqttClientList.length;j++){
                     var c = mqttClientList[j];
                     if(!c) continue;
                     var key = (c.mqttClientName||'')+'|'+(c.host||'')+'|'+(c.protocol||'');
-                    if(!latestByKey[key] || orderVal(c) > orderVal(latestByKey[key])){
+                    if(!latestByKey[key] || 
+                       orderVal(c) > orderVal(latestByKey[key]) || 
+                       (orderVal(c) === orderVal(latestByKey[key]) && publisherCount(c) > publisherCount(latestByKey[key]))){
+                        console.log('[MqttClientService] Selecting client version:', c.mqttClientName, 'Publishers:', publisherCount(c), 'Updated:', orderVal(c));
                         latestByKey[key] = c;
                     }
                 }
@@ -110,6 +114,13 @@ class MqttClientService extends Events.EventEmitter {
                     if(mqttClientObj!=null && mqttClientObj.mcsId!=null) {
                         if(firstId==null) firstId = mqttClientObj.mcsId;
                         this.mqttClientSettings[mqttClientObj.mcsId] = mqttClientObj;
+                        
+                        // 调试：检查每个client的publisher数量
+                        console.log('[MqttClientService] Loaded client:', mqttClientObj.mqttClientName, 'Publishers:', mqttClientObj.publishSettings ? mqttClientObj.publishSettings.length : 0);
+                        if(mqttClientObj.publishSettings && mqttClientObj.publishSettings.length > 0) {
+                            console.log('[MqttClientService] Publisher IDs:', mqttClientObj.publishSettings.map(p => p.pubId));
+                        }
+                        
                         if(mqttClientObj.autoConnectOnAppLaunch == true) {
                             PlatformDispatcherService.dispatcherAction({actionType: MqttClientConstants.ACTION_MQTT_CLIENT_CONNECT,data:mqttClientObj},CommonConstants.SERVICE_TYPE_MQTT_CLIENTS);
                         }
@@ -243,13 +254,16 @@ class MqttClientService extends Events.EventEmitter {
         }
     }
 
-    deleteMqttClientSettings(mcsId) { 
-        MqttClientDbService.deleteMqttClientSettingsById(mcsId);
-        PlatformDispatcherService.dispatcherAction({actionType: MqttClientConstants.ACTION_MQTT_CLIENT_DISCONNECT,data:mcsId},CommonConstants.SERVICE_TYPE_MQTT_CLIENTS);
-        this.clearMqttClientPubSubCache(mcsId);
-        delete this.mqttClientSettings[mcsId];
-        delete this.mqttClientsStatus[mcsId];
-        this.emitChange(MqttClientConstants.EVENT_MQTT_CLIENT_DATA_CHANGED,mcsId);
+    deleteMqttClientSettings(mcsId) { 
+        MqttClientDbService.deleteMqttClientSettingsById(mcsId).then(() => {
+            PlatformDispatcherService.dispatcherAction({actionType: MqttClientConstants.ACTION_MQTT_CLIENT_DISCONNECT,data:mcsId},CommonConstants.SERVICE_TYPE_MQTT_CLIENTS);
+            this.clearMqttClientPubSubCache(mcsId);
+            delete this.mqttClientSettings[mcsId];
+            delete this.mqttClientsStatus[mcsId];
+            this.emitChange(MqttClientConstants.EVENT_MQTT_CLIENT_DATA_CHANGED,mcsId);
+        }).catch((error) => {
+            console.error('[MqttClientService] Error deleting client from database:', mcsId, error);
+        });
     }
 
     disconnectMqttClient(action) { 
@@ -259,7 +273,8 @@ class MqttClientService extends Events.EventEmitter {
         this.emitChange(MqttClientConstants.EVENT_MQTT_CLIENT_DATA_CHANGED,action.data);
     }
 
-    savePublisherSettings(mcsId,publisher) { 
+    savePublisherSettings(mcsId,publisher) { 
+        console.log('[MqttClientService] savePublisherSettings called for:', mcsId, 'publisher:', publisher.pubId);
         var obj = this.mqttClientSettings[mcsId];
         if(obj!=null && publisher!=null) {
             var isNew = false;
@@ -268,15 +283,24 @@ class MqttClientService extends Events.EventEmitter {
 
             if(pubIndex!=-1) {
                 obj.publishSettings[pubIndex] = publisher;
+                console.log('[MqttClientService] Updated existing publisher at index:', pubIndex);
             } else {
                 isNew = true;
                 obj.publishSettings.push(publisher);
+                console.log('[MqttClientService] Added new publisher, total publishers:', obj.publishSettings.length);
             }
 
             if(isNew === true) {
                 this.emitChange(MqttClientConstants.EVENT_MQTT_CLIENT_DATA_CHANGED,mcsId);
             }
-            MqttClientDbService.saveMqttClientSettings(obj);
+            console.log('[MqttClientService] Saving to database, total publishers:', obj.publishSettings.length);
+            MqttClientDbService.saveMqttClientSettings(obj).then(() => {
+                console.log('[MqttClientService] Database save completed for publisher:', publisher.pubId);
+            }).catch((error) => {
+                console.error('[MqttClientService] Database save failed:', error);
+            });
+        } else {
+            console.log('[MqttClientService] Cannot save publisher - obj:', !!obj, 'publisher:', !!publisher);
         }
     }
 
@@ -316,7 +340,7 @@ class MqttClientService extends Events.EventEmitter {
         }
     }
 
-    saveSubscriberSettings(mcsId,subscriber) { 
+    saveSubscriberSettings(mcsId,subscriber) { 
         var obj = this.mqttClientSettings[mcsId];
 
         if(obj!=null && subscriber!=null) {

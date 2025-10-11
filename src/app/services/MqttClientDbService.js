@@ -8,10 +8,11 @@ class MqttClientDbWorker {
         // Prefer LocalStorage in Electron to avoid IndexedDB/WebSQL driver issues
         try {
             this.db = localforage.createInstance({
-                name:"MQTT_CLIENT_SETTINGS",
+                name: "MQTT_CLIENT_SETTINGS",
                 driver: localforage.LOCALSTORAGE
             });
         } catch(e) {
+            console.error('[MqttClientDbService] Error creating localforage instance:', e);
             this.db = null;
         }
 
@@ -84,7 +85,7 @@ class MqttClientDbWorker {
                                         }.bind(this)).catch(function(){
                                             try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
                                         });
-                                    } else {
+            } else {
                                         try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
                                     }
                                 } catch(_) {
@@ -97,9 +98,7 @@ class MqttClientDbWorker {
             }
         } catch(e) {}
 
-        // Best-effort: one-time merge from IndexedDB instance (older data)
-        // Disable auto-merge to avoid creating duplicates
-        // (kept here commented intentionally for potential manual migration)
+        // Use original storage configuration - no migration needed
     }
 
     saveMqttClientSettings(obj) { 
@@ -107,9 +106,11 @@ class MqttClientDbWorker {
         return this.db.setItem(obj.mcsId, obj);
     }
 
-    getAllMqttClientSettings() { 
+    getAllMqttClientSettings() { 
         var mqttClientSettingsList = [];
-        if (!this.db || !this.db.iterate) return Promise.resolve([]);
+        if (!this.db || !this.db.iterate) {
+            return Promise.resolve([]);
+        }
         return this.db.iterate(function(value, key, iterationNumber) {
             if (value && typeof value === 'object') {
                 // Normalize will fields to avoid undefined/null issues
@@ -129,16 +130,19 @@ class MqttClientDbWorker {
                     try { value.willPayload = '' + value.willPayload; } catch(_) { value.willPayload = ''; }
                 }
             }
-            mqttClientSettingsList.push(value);
-        }).then(function() {
+                mqttClientSettingsList.push(value);
+            }).then(function() {
             return _.sortBy(mqttClientSettingsList, ['createdOn']);
         });
     }
 
     deleteMqttClientSettingsById(mcsId) {
-        if (!this.db || !this.db.removeItem) return Promise.resolve();
+        if (!this.db || !this.db.removeItem) {
+            return Promise.resolve();
+        }
         return this.db.removeItem(mcsId);
     }
+
 }
 
 export default new MqttClientDbWorker();

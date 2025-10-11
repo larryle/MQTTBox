@@ -55,7 +55,7 @@ class MqttClientDashboard extends Component {
 
     updatePageData(mcsId) {
         if(mcsId == this.props.params.mcsId) {
-            this.setState({mqttClientObj:MqttClientService.getMqttClientSettingsByMcsId(this.props.params.mcsId),
+            this.setState({mqttClientSettings:MqttClientService.getMqttClientSettingsByMcsId(this.props.params.mcsId),
             conState:MqttClientService.getMqttClientStateByMcsId(this.props.params.mcsId)});
         }
     }
