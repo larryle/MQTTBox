@@ -16,7 +16,10 @@
     "dmg:mac": "bash -c 'set -e; APP=\"dist/MQTTBox-darwin-x64/MQTTBox.app\"; VER=\"$npm_package_version\"; OUT=\"dist/MQTTBox-$VER.dmg\"; TMP=\"dist/dmg-tmp\"; rm -rf \"$TMP\"; mkdir -p \"$TMP\"; cp -R \"$APP\" \"$TMP/\"; ln -s /Applications \"$TMP/Applications\"; hdiutil create -volname \"MQTTBox $VER\" -srcfolder \"$TMP\" -ov -format UDZO \"$OUT\"'",
     "dist:mac": "electron-builder --mac dmg",
     "dist:mac:x64": "electron-builder --mac dmg --x64",
-    "dist:mac:arm64": "electron-builder --mac dmg --arm64"
+    "dist:mac:arm64": "electron-builder --mac dmg --arm64",
+    "dist:win": "electron-builder --win --config.compression=store && rm -rf dist/win-unpacked && rm -f dist/*.blockmap",
+    "dist:win:x64": "electron-builder --win --x64 --config.compression=store && rm -rf dist/win-unpacked && rm -f dist/*.blockmap",
+    "dist:win:ia32": "electron-builder --win --ia32 --config.compression=store && rm -rf dist/win-unpacked && rm -f dist/*.blockmap"
   },
   "private": true,
   "devDependencies": {
@@ -33,7 +36,7 @@
     "babelify": "7.3.0",
     "browser-sync": "2.18.2",
     "browserify": "13.1.1",
-    "electron": "^28.3.3",
+    "electron": "^22.3.27",
     "electron-builder": "^24.9.1",
     "electron-packager": "^17.1.2",
     "fancy-log": "^2.0.0",
@@ -83,6 +86,32 @@
           ]
         }
       ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "src/www/images/icon.ico",
+      "requestedExecutionLevel": "asInvoker",
+      "artifactName": "MQTTBox-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "buildDependenciesFromSource": false,
+    "nodeGypRebuild": false,
+    "buildVersion": "0.2.2",
+    "directories": {
+      "output": "dist"
     }
   }
 }

@@ -4,6 +4,44 @@ const url = require('url');
 const mqtt = require('mqtt');
 const fs = require('fs');
 
+// Windows 兼容性配置
+if (process.platform === 'win32') {
+  // 检测 Windows 版本，应用相应的兼容性设置
+  const os = require('os');
+  const version = os.release();
+  const majorVersion = parseInt(version.split('.')[0]);
+  const minorVersion = parseInt(version.split('.')[1]);
+  
+  console.log(`[main] Windows version detected: ${version} (major: ${majorVersion}, minor: ${minorVersion})`);
+  
+  // Windows XP (5.x) 和 Windows Vista/7 (6.x) 和 Windows 8/8.1 (6.2/6.3)
+  if (majorVersion < 10) {
+    console.log('[main] Detected Windows 8.1 or earlier, applying compatibility settings');
+    
+    // 禁用硬件加速以避免旧版本 Windows 上的问题
+    app.commandLine.appendSwitch('--disable-gpu');
+    app.commandLine.appendSwitch('--disable-gpu-sandbox');
+    app.commandLine.appendSwitch('--disable-software-rasterizer');
+    
+    // 设置较低的内存限制
+    app.commandLine.appendSwitch('--max-old-space-size', '1024');
+    
+    // 禁用沙盒以避免兼容性问题
+    app.commandLine.appendSwitch('--no-sandbox');
+    
+    // 禁用一些现代特性
+    app.commandLine.appendSwitch('--disable-features', 'VizDisplayCompositor');
+    
+    // Windows XP 特殊处理
+    if (majorVersion === 5) {
+      console.log('[main] Windows XP detected, applying additional compatibility settings');
+      app.commandLine.appendSwitch('--disable-web-security');
+      app.commandLine.appendSwitch('--disable-features', 'VizDisplayCompositor,TranslateUI');
+      app.commandLine.appendSwitch('--disable-ipc-flooding-protection');
+    }
+  }
+}
+
 const clients = new Map();
 
 function buildMqttUrl(mqttClientObj) {
