@@ -6,12 +6,17 @@ import path from 'path';
 export default defineConfig({
   root: path.resolve(__dirname, 'src/www'),
   base: './',
+  publicDir: 'lib',
   build: {
     outDir: path.resolve(__dirname, 'build'),
     emptyOutDir: true,
+    target: 'es2015',
     rollupOptions: {
-      input: path.resolve(__dirname, 'src/www/app-entry.js'),
+      input: {
+        main: path.resolve(__dirname, 'src/www/index.html')
+      },
       output: {
+        format: 'iife',
         entryFileNames: 'app.js',
         chunkFileNames: 'app.js',
         assetFileNames: 'assets/[name]-[hash][extname]'

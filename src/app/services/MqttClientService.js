@@ -19,7 +19,62 @@ class MqttClientService extends Events.EventEmitter {
         this.mqttClientSubscribedData = {};
 
         this.registerToAppDispatcher();
-        this.syncMqttClientSettingsCache();
+        
+        // 监听数据迁移完成事件
+        this.setupMigrationListener();
+        
+        // 延迟加载数据，确保迁移完成
+        setTimeout(() => {
+            console.log('[MqttClientService] Starting initial data load...');
+            this.syncMqttClientSettingsCache();
+        }, 1000);
+    }
+
+    setupMigrationListener() {
+        // 监听数据迁移完成事件
+        console.log('[MqttClientService] Setting up migration listener...');
+        try {
+            const electron = require('electron');
+            console.log('[MqttClientService] Electron available:', !!electron);
+            console.log('[MqttClientService] ipcRenderer available:', !!(electron && electron.ipcRenderer));
+            
+            if (electron && electron.ipcRenderer) {
+                console.log('[MqttClientService] Registering migration-data listener...');
+                electron.ipcRenderer.on('migration-data', (event, payload) => {
+                    console.log('[MqttClientService] Migration data received:', payload);
+                    if (payload && payload.service === 'MQTT_CLIENT_SETTINGS' && Array.isArray(payload.items)) {
+                        console.log('[MqttClientService] Processing', payload.items.length, 'migrated items');
+                        // 直接存储迁移的数据
+                        this.storeMigratedData(payload.items);
+                    }
+                });
+                console.log('[MqttClientService] Migration listener registered successfully');
+            } else {
+                console.log('[MqttClientService] ipcRenderer not available');
+            }
+        } catch (e) {
+            console.log('[MqttClientService] Error setting up migration listener:', e.message);
+        }
+    }
+
+    storeMigratedData(items) {
+        console.log('[MqttClientService] Storing migrated data...');
+        const dbService = new MqttClientDbService();
+        items.forEach(item => {
+            if (item && item.mcsId) {
+                dbService.saveMqttClientSettings(item).then(() => {
+                    console.log('[MqttClientService] Stored migrated item:', item.mcsId);
+                }).catch(err => {
+                    console.error('[MqttClientService] Failed to store migrated item:', err);
+                });
+            }
+        });
+        
+        // 存储完成后重新加载数据
+        setTimeout(() => {
+            console.log('[MqttClientService] Reloading cache after migration...');
+            this.syncMqttClientSettingsCache();
+        }, 1000);
     }
 
     registerToAppDispatcher() { 
