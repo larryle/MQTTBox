@@ -10,9 +10,10 @@ export default defineConfig({
     outDir: path.resolve(__dirname, 'build'),
     emptyOutDir: true,
     rollupOptions: {
-      input: path.resolve(__dirname, 'src/www/index.html'),
+      input: path.resolve(__dirname, 'src/www/app-entry.js'),
       output: {
         entryFileNames: 'app.js',
+        chunkFileNames: 'app.js',
         assetFileNames: 'assets/[name]-[hash][extname]'
       }
     }
@@ -26,11 +27,12 @@ export default defineConfig({
           ['@babel/preset-react', { runtime: 'classic' }]
         ]
       }
-    }),
-    legacy({
-      targets: ['defaults', 'not IE 11'],
-      modernPolyfills: true
     })
+    // Temporarily disabled legacy plugin to fix build issues
+    // legacy({
+    //   targets: ['defaults', 'not IE 11'],
+    //   modernPolyfills: true
+    // })
   ],
   resolve: {
     alias: {
