@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTTBox - MQTT Client Tool</title>
+    <meta name="description" content="MQTTBox - Developers helper program to create and test MQTT connectivity protocol.">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1JYEJC7FD3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-1JYEJC7FD3');
+    </script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .download-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .download-btn {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            font-weight: bold;
+        }
+        .download-btn:hover {
+            background: #0056b3;
+        }
+        .features {
+            margin: 30px 0;
+        }
+        .feature {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MQTTBox</h1>
+        <p style="text-align: center; color: #666; font-size: 18px;">
+            MQTT Client Tool for testing and development
+        </p>
+        
+        <div class="download-section">
+            <h2>Download MQTTBox</h2>
+            <p>Choose your platform:</p>
+            <a href="#" class="download-btn" onclick="trackDownload('windows')">Windows</a>
+            <a href="#" class="download-btn" onclick="trackDownload('macos')">macOS</a>
+            <a href="#" class="download-btn" onclick="trackDownload('linux')">Linux</a>
+        </div>
+        
+        <div class="features">
+            <h2>Features</h2>
+            <div class="feature">
+                <strong>MQTT Client</strong> - Connect to MQTT brokers and test connections
+            </div>
+            <div class="feature">
+                <strong>Message Publishing</strong> - Publish messages to MQTT topics
+            </div>
+            <div class="feature">
+                <strong>Topic Subscription</strong> - Subscribe to MQTT topics and receive messages
+            </div>
+            <div class="feature">
+                <strong>Load Testing</strong> - Test MQTT broker performance with load testing
+            </div>
+            <div class="feature">
+                <strong>Cross Platform</strong> - Available for Windows, macOS, and Linux
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px; color: #666;">
+            <p>Open source MQTT client tool for developers</p>
+            <p>GitHub: <a href="https://github.com/workswithweb/MQTTBox-master">workswithweb/MQTTBox-master</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Track download events
+        function trackDownload(platform) {
+            gtag('event', 'download_click', {
+                platform: platform,
+                app_name: 'MQTTBox',
+                version: '0.2.2'
+            });
+            console.log('Download tracked for platform:', platform);
+        }
+        
+        // Track page view
+        gtag('event', 'page_view', {
+            page_title: 'MQTTBox Home',
+            page_location: window.location.href
+        });
+        
+        console.log('Google Analytics loaded successfully');
+    </script>
+</body>
+</html>

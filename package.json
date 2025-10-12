@@ -27,7 +27,8 @@
     "dist:linux": "electron-builder --linux --config.compression=store && rm -rf dist/linux-unpacked && rm -f dist/*.blockmap",
     "dist:linux:x64": "electron-builder --linux --x64 --config.compression=store && rm -rf dist/linux-unpacked && rm -f dist/*.blockmap",
     "dist:linux:arm64": "electron-builder --linux --arm64 --config.compression=store && rm -rf dist/linux-unpacked && rm -f dist/*.blockmap",
-    "dist:ubuntu": "electron-builder --linux --x64 --config.compression=store && rm -rf dist/linux-unpacked && rm -f dist/*.blockmap"
+    "dist:ubuntu": "electron-builder --linux --x64 --config.compression=store && rm -rf dist/linux-unpacked && rm -f dist/*.blockmap",
+    "test:analytics": "node scripts/test-analytics.js"
   },
   "private": true,
   "devDependencies": {

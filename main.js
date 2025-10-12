@@ -4,6 +4,9 @@ const url = require('url');
 const mqtt = require('mqtt');
 const fs = require('fs');
 
+// 导入 Analytics 服务
+const AnalyticsService = require('./src/app/services/AnalyticsService');
+
 // Windows 兼容性配置
 if (process.platform === 'win32') {
   // 检测 Windows 版本，应用相应的兼容性设置
@@ -361,6 +364,17 @@ async function tryMigrateFromOldOrigin() {
 }
 
 app.on('ready', async () => {
+  // 追踪应用启动
+  const startupTime = Date.now();
+  AnalyticsService.trackAppStartup(startupTime);
+  
+  // 追踪应用安装（首次运行）
+  AnalyticsService.track('app_install', {
+    platform: process.platform,
+    version: app.getVersion(),
+    arch: process.arch
+  });
+  
   createWindow();
   await tryMigrateFromOldOrigin();
   // Set standard application menu to enable copy/paste shortcuts
@@ -459,6 +473,22 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (mainWindow === null) createWindow();
+});
+
+// 追踪应用崩溃
+process.on('uncaughtException', (error) => {
+  AnalyticsService.trackError('uncaught_exception', error.message, {
+    stack: error.stack,
+    platform: process.platform,
+    version: app.getVersion()
+  });
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  AnalyticsService.trackError('unhandled_rejection', reason.toString(), {
+    platform: process.platform,
+    version: app.getVersion()
+  });
 });
 
 
