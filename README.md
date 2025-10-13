@@ -13,8 +13,8 @@ Supercharge your MQTT workflow with MQTTBox Apps available on Chrome, Linux, Mac
   - **Minimum Version**: macOS 10.14 (Mojave) or later
   - **Recommended**: macOS 11.0 (Big Sur) or later
 - **Windows**: 64-bit executable with NSIS installer
-  - **Minimum Version**: Windows 10 (version 1903) or later
-  - **Recommended**: Windows 11 or latest Windows 10
+  - **Minimum Version**: Windows 7 SP1 or later
+  - **Recommended**: Windows 10 (version 1903) or later
 - **Linux**: AppImage and DEB package support
   - **Minimum Version**: Ubuntu 18.04 LTS or equivalent
   - **Recommended**: Ubuntu 20.04 LTS or later
