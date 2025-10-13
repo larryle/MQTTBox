@@ -2,7 +2,7 @@
 #### Developers helper program to create and test MQTT connectivity protocol.
 Supercharge your MQTT workflow with MQTTBox Apps available on Chrome, Linux, Mac, Web and Windows! Build, test, and document your MQTT connectivity protocol.
 
-#### [MQTTBox Apps are available for following platforms - Download MQTTBox Apps HERE!](http://workswithweb.com/html/mqttbox/downloads.html)
+#### [MQTTBox Apps are available for following platforms - Download MQTTBox Apps HERE!](https://github.com/larryle/MQTTBox/releases)
 
 ![Chrome](http://workswithweb.com/images/platforms/chrome.png "Chrome Store app")![Linux](http://workswithweb.com/images/platforms/linux.png "Linux")![MAC](http://workswithweb.com/images/platforms/mac.png "MAC app")![HTML App](http://workswithweb.com/images/platforms/html.png "HTML App")![Windows](http://workswithweb.com/images/platforms/windows.png "Windows app")
 
@@ -26,7 +26,7 @@ Please report Feature Requests, Enhancements or Bugs to workswithweb@gmail.com o
 ## Getting Started
 Make sure you have [Node.js](https://nodejs.org/en/) installed and follow below steps to build and execute.
 
-- `git clone git@github.com:workswithweb/MQTTBox.git`
+- `git clone git@github.com:larryle/MQTTBox.git`
 
 - `cd MQTTBox`
 
@@ -41,9 +41,9 @@ Make sure you have [Node.js](https://nodejs.org/en/) installed and follow below 
 Thats it !!! Your project is setup. Execute below commands in your current folder (MQTTBox) as per your app requirements.
 
 ###### Web App Builds
-- `gulp build` - Generates `build` folder with all compiled static web assets in your current directory (MQTTBox). You can deploy `build` in you web/app server.
+- `npm run build` - Generates `build` folder with all compiled static web assets in your current directory (MQTTBox). You can deploy `build` in you web/app server.
 
-- `gulp` - Live development mode. Use while development to see live reload of your web app when changes done in code.
+- `npm start` - Live development mode. Use while development to see live reload of your web app when changes done in code.
 
 By default `master` branch has MQTTBox web app. Please check other MQTTBox branches for other platform apps.
  
