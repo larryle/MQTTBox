@@ -2,9 +2,25 @@
 #### Developers helper program to create and test MQTT connectivity protocol.
 Supercharge your MQTT workflow with MQTTBox Apps available on Chrome, Linux, Mac, Web and Windows! Build, test, and document your MQTT connectivity protocol.
 
-#### [MQTTBox Apps are available for following platforms - Download MQTTBox Apps HERE!](https://github.com/larryle/MQTTBox/releases)
+#### MQTTBox Apps are available for following platforms - Download MQTTBox Apps HERE!
 
 ![Chrome](http://workswithweb.com/images/platforms/chrome.png "Chrome Store app")![Linux](http://workswithweb.com/images/platforms/linux.png "Linux")![MAC](http://workswithweb.com/images/platforms/mac.png "MAC app")![HTML App](http://workswithweb.com/images/platforms/html.png "HTML App")![Windows](http://workswithweb.com/images/platforms/windows.png "Windows app")
+
+### 📥 Direct Download Links
+
+#### macOS
+- **Intel Mac**: [MQTTBox-0.2.2.dmg](https://github.com/larryle/MQTTBox/releases/download/v0.2.2/MQTTBox-0.2.2.dmg) (100.9 MB)
+- **Apple Silicon Mac**: [MQTTBox-0.2.2-arm64.dmg](https://github.com/larryle/MQTTBox/releases/download/v0.2.2/MQTTBox-0.2.2-arm64.dmg) (104.5 MB)
+
+#### Windows
+- **64-bit Windows**: [MQTTBox-0.2.2-x64.exe](https://github.com/larryle/MQTTBox/releases/download/v0.2.2/MQTTBox-0.2.2-x64.exe) (80.1 MB)
+
+#### Linux
+- **Universal AppImage**: [MQTTBox-0.2.2.AppImage](https://github.com/larryle/MQTTBox/releases/download/v0.2.2/MQTTBox-0.2.2.AppImage) (102.8 MB)
+- **Ubuntu/Debian**: [MQTTBox_0.2.2_amd64.deb](https://github.com/larryle/MQTTBox/releases/download/v0.2.2/MQTTBox_0.2.2_amd64.deb) (93.7 MB)
+
+#### All Releases
+- **View all releases**: [GitHub Releases](https://github.com/larryle/MQTTBox/releases)
 
 #### MQTTBox Client features include:
 - Connect to multiple mqtt brokers with TCP or Web Sockets protocols
