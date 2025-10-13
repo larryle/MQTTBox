@@ -21,7 +21,7 @@ Supercharge your MQTT workflow with MQTTBox Apps available on Chrome, Linux, Mac
 - View load test data 
 - View load test results in graphs
 
-Please report Feature Requests, Enhancements or Bugs to workswithweb@gmail.com or on [Github](https://github.com/issues)
+Please report Feature Requests, Enhancements or Bugs to linfengle@gmail.com or on [Github](https://github.com/issues)
 
 ## Getting Started
 Make sure you have [Node.js](https://nodejs.org/en/) installed and follow below steps to build and execute.
