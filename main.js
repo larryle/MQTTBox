@@ -5,7 +5,28 @@ const mqtt = require('mqtt');
 const fs = require('fs');
 
 // Import Analytics service
-const AnalyticsService = require('./src/app/services/AnalyticsService');
+let AnalyticsService;
+try {
+  // Try relative path first (for development)
+  AnalyticsService = require('./src/app/services/AnalyticsService');
+} catch (error) {
+  try {
+    // Try absolute path (for packaged app)
+    const path = require('path');
+    const analyticsPath = path.join(__dirname, 'src', 'app', 'services', 'AnalyticsService');
+    AnalyticsService = require(analyticsPath);
+  } catch (error2) {
+    console.warn('[main] AnalyticsService not found, analytics disabled:', error2.message);
+    // Create a mock AnalyticsService
+    AnalyticsService = {
+      track: () => {},
+      trackAppStartup: () => {},
+      trackError: () => {},
+      init: () => {},
+      showConsentDialog: () => {}
+    };
+  }
+}
 
 // Windows compatibility configuration
 if (process.platform === 'win32') {

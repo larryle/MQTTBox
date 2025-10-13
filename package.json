@@ -82,7 +82,8 @@
     "files": [
       "build/**",
       "main.js",
-      "package.json"
+      "package.json",
+      "src/app/services/AnalyticsService.js"
     ],
     "extraResources": [
       {
