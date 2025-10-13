@@ -4,12 +4,12 @@ const url = require('url');
 const mqtt = require('mqtt');
 const fs = require('fs');
 
-// 导入 Analytics 服务
+// Import Analytics service
 const AnalyticsService = require('./src/app/services/AnalyticsService');
 
-// Windows 兼容性配置
+// Windows compatibility configuration
 if (process.platform === 'win32') {
-  // 检测 Windows 版本，应用相应的兼容性设置
+  // Detect Windows version and apply corresponding compatibility settings
   const os = require('os');
   const version = os.release();
   const majorVersion = parseInt(version.split('.')[0]);
@@ -17,25 +17,25 @@ if (process.platform === 'win32') {
   
   console.log(`[main] Windows version detected: ${version} (major: ${majorVersion}, minor: ${minorVersion})`);
   
-  // Windows XP (5.x) 和 Windows Vista/7 (6.x) 和 Windows 8/8.1 (6.2/6.3)
+  // Windows XP (5.x) and Windows Vista/7 (6.x) and Windows 8/8.1 (6.2/6.3)
   if (majorVersion < 10) {
     console.log('[main] Detected Windows 8.1 or earlier, applying compatibility settings');
     
-    // 禁用硬件加速以避免旧版本 Windows 上的问题
+    // Disable hardware acceleration to avoid issues on older Windows versions
     app.commandLine.appendSwitch('--disable-gpu');
     app.commandLine.appendSwitch('--disable-gpu-sandbox');
     app.commandLine.appendSwitch('--disable-software-rasterizer');
     
-    // 设置较低的内存限制
+    // Set lower memory limit
     app.commandLine.appendSwitch('--max-old-space-size', '1024');
     
-    // 禁用沙盒以避免兼容性问题
+    // Disable sandbox to avoid compatibility issues
     app.commandLine.appendSwitch('--no-sandbox');
     
-    // 禁用一些现代特性
+    // Disable some modern features
     app.commandLine.appendSwitch('--disable-features', 'VizDisplayCompositor');
     
-    // Windows XP 特殊处理
+    // Windows XP special handling
     if (majorVersion === 5) {
       console.log('[main] Windows XP detected, applying additional compatibility settings');
       app.commandLine.appendSwitch('--disable-web-security');
@@ -364,11 +364,11 @@ async function tryMigrateFromOldOrigin() {
 }
 
 app.on('ready', async () => {
-  // 追踪应用启动
+  // Track app startup
   const startupTime = Date.now();
   AnalyticsService.trackAppStartup(startupTime);
   
-  // 追踪应用安装（首次运行）
+  // Track app installation (first run)
   AnalyticsService.track('app_install', {
     platform: process.platform,
     version: app.getVersion(),
@@ -475,7 +475,7 @@ app.on('activate', () => {
   if (mainWindow === null) createWindow();
 });
 
-// 追踪应用崩溃
+// Track app crashes
 process.on('uncaughtException', (error) => {
   AnalyticsService.trackError('uncaught_exception', error.message, {
     stack: error.stack,

@@ -41,22 +41,22 @@ class AnalyticsService {
       const { dialog } = require('electron');
       const result = dialog.showMessageBoxSync({
         type: 'question',
-        buttons: ['同意', '拒绝', '了解更多'],
-        title: '数据收集同意',
-        message: 'MQTTBox 想收集匿名使用数据来改进软件。\n\n收集的数据包括：\n- 功能使用情况\n- 错误信息\n- 性能数据\n\n这些数据将帮助我们：\n- 修复bug\n- 改进功能\n- 优化性能\n\n您是否同意收集这些数据？',
-        detail: '您可以随时在设置中更改此选择。'
+        buttons: ['Agree', 'Decline', 'Learn More'],
+        title: 'Data Collection Consent',
+        message: 'MQTTBox wants to collect anonymous usage data to improve the software.\n\nCollected data includes:\n- Feature usage\n- Error information\n- Performance data\n\nThis data will help us:\n- Fix bugs\n- Improve features\n- Optimize performance\n\nDo you agree to collect this data?',
+        detail: 'You can change this choice anytime in settings.'
       });
 
-      if (result === 0) { // 同意
+      if (result === 0) { // Agree
         localStorage.setItem('mqttbox_analytics_consent', 'true');
         this.enabled = true;
         this.init();
-      } else if (result === 1) { // 拒绝
+      } else if (result === 1) { // Decline
         localStorage.setItem('mqttbox_analytics_consent', 'false');
         this.enabled = false;
-      } else if (result === 2) { // 了解更多
+      } else if (result === 2) { // Learn More
         this.showPrivacyPolicy();
-        return this.showConsentDialog(); // 重新显示
+        return this.showConsentDialog(); // Show again
       }
     } catch (error) {
       console.warn('[Analytics] Consent dialog not available:', error.message);

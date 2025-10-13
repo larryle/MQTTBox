@@ -1,50 +1,50 @@
-# MQTTBox 隐私政策
+# MQTTBox Privacy Policy
 
-## 数据收集
+## Data Collection
 
-MQTTBox 可能会收集以下匿名数据来改进软件：
+MQTTBox may collect the following anonymous data to improve the software:
 
-### 收集的数据类型
-- **应用安装**：应用下载和安装统计
-- **应用启动**：应用启动时间和频率
-- **错误信息**：应用崩溃和错误
-- **平台信息**：操作系统、应用版本、架构
-- **基本使用**：应用使用时长和频率
+### Types of Data Collected
+- **App Installation**: App download and installation statistics
+- **App Launch**: App startup time and frequency
+- **Error Information**: App crashes and errors
+- **Platform Information**: Operating system, app version, architecture
+- **Basic Usage**: App usage duration and frequency
 
-### 不收集的数据
-- **个人身份信息**：姓名、邮箱、电话
-- **敏感数据**：MQTT密码、消息内容
-- **文件内容**：本地文件内容
-- **网络数据**：MQTT消息内容
+### Data NOT Collected
+- **Personal Identifiable Information**: Name, email, phone number
+- **Sensitive Data**: MQTT passwords, message content
+- **File Content**: Local file content
+- **Network Data**: MQTT message content
 
-### 数据用途
-- 改进软件功能
-- 修复bug和问题
-- 优化性能
-- 了解用户需求
+### Data Usage
+- Improve software functionality
+- Fix bugs and issues
+- Optimize performance
+- Understand user needs
 
-### 数据存储
-- 数据存储在Google Analytics
-- 数据保留期：26个月
-- 数据匿名化处理
+### Data Storage
+- Data stored in Google Analytics
+- Data retention period: 26 months
+- Data anonymization processing
 
-### 用户权利
-- 随时选择退出
-- 查看收集的数据
-- 删除收集的数据
-- 导出数据
+### User Rights
+- Opt out at any time
+- View collected data
+- Delete collected data
+- Export data
 
-### 联系方式
-如有问题，请联系：linfengle@gmail.com
+### Contact Information
+For questions, please contact: linfengle@gmail.com
 
-## 数据收集控制
+## Data Collection Control
 
-您可以在应用设置中控制数据收集：
+You can control data collection in the app settings:
 
-1. **启用/禁用分析**：在设置中选择是否收集数据
-2. **查看收集的数据**：在设置中查看已收集的数据
-3. **删除数据**：在设置中删除已收集的数据
+1. **Enable/Disable Analytics**: Choose whether to collect data in settings
+2. **View Collected Data**: View collected data in settings
+3. **Delete Data**: Delete collected data in settings
 
-## 更新通知
+## Update Notifications
 
-我们会在收集新的数据类型时通知您，并更新此隐私政策。
+We will notify you when collecting new types of data and update this privacy policy.

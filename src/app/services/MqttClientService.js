@@ -20,10 +20,10 @@ class MqttClientService extends Events.EventEmitter {
 
         this.registerToAppDispatcher();
         
-        // 监听数据迁移完成事件
+        // Listen for data migration completion events
         this.setupMigrationListener();
         
-        // 延迟加载数据，确保迁移完成
+        // Delay data loading to ensure migration completion
         setTimeout(() => {
             console.log('[MqttClientService] Starting initial data load...');
             this.syncMqttClientSettingsCache();
@@ -31,7 +31,7 @@ class MqttClientService extends Events.EventEmitter {
     }
 
     setupMigrationListener() {
-        // 监听数据迁移完成事件
+        // Listen for data migration completion events
         console.log('[MqttClientService] Setting up migration listener...');
         try {
             const electron = require('electron');
@@ -44,7 +44,7 @@ class MqttClientService extends Events.EventEmitter {
                     console.log('[MqttClientService] Migration data received:', payload);
                     if (payload && payload.service === 'MQTT_CLIENT_SETTINGS' && Array.isArray(payload.items)) {
                         console.log('[MqttClientService] Processing', payload.items.length, 'migrated items');
-                        // 直接存储迁移的数据
+                        // Store migrated data directly
                         this.storeMigratedData(payload.items);
                     }
                 });
@@ -70,7 +70,7 @@ class MqttClientService extends Events.EventEmitter {
             }
         });
         
-        // 存储完成后重新加载数据
+        // Reload data after storage completion
         setTimeout(() => {
             console.log('[MqttClientService] Reloading cache after migration...');
             this.syncMqttClientSettingsCache();
@@ -170,7 +170,7 @@ class MqttClientService extends Events.EventEmitter {
                         if(firstId==null) firstId = mqttClientObj.mcsId;
                         this.mqttClientSettings[mqttClientObj.mcsId] = mqttClientObj;
                         
-                        // 调试：检查每个client的publisher数量
+                        // Debug: Check publisher count for each client
                         console.log('[MqttClientService] Loaded client:', mqttClientObj.mqttClientName, 'Publishers:', mqttClientObj.publishSettings ? mqttClientObj.publishSettings.length : 0);
                         if(mqttClientObj.publishSettings && mqttClientObj.publishSettings.length > 0) {
                             console.log('[MqttClientService] Publisher IDs:', mqttClientObj.publishSettings.map(p => p.pubId));
