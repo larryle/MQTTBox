@@ -6,18 +6,15 @@ Supercharge your MQTT workflow with MQTTBox Apps available on Chrome, Linux, Mac
 
 ![Chrome](http://workswithweb.com/images/platforms/chrome.png "Chrome Store app")![Linux](http://workswithweb.com/images/platforms/linux.png "Linux")![MAC](http://workswithweb.com/images/platforms/mac.png "MAC app")![HTML App](http://workswithweb.com/images/platforms/html.png "HTML App")![Windows](http://workswithweb.com/images/platforms/windows.png "Windows app")
 
-### 📥 Direct Download Links
+### 📥 Download Links
 
-#### macOS
-- **Intel Mac**: [MQTTBox-0.2.2.dmg](https://github.com/larryle/MQTTBox/releases/download/v0.2.2/MQTTBox-0.2.2.dmg) (100.9 MB)
-- **Apple Silicon Mac**: [MQTTBox-0.2.2-arm64.dmg](https://github.com/larryle/MQTTBox/releases/download/v0.2.2/MQTTBox-0.2.2-arm64.dmg) (104.5 MB)
+#### Latest Release
+- **Download MQTTBox v0.2.2**: [GitHub Releases](https://github.com/larryle/MQTTBox/releases/tag/v0.2.2)
 
-#### Windows
-- **64-bit Windows**: [MQTTBox-0.2.2-x64.exe](https://github.com/larryle/MQTTBox/releases/download/v0.2.2/MQTTBox-0.2.2-x64.exe) (80.1 MB)
-
-#### Linux
-- **Universal AppImage**: [MQTTBox-0.2.2.AppImage](https://github.com/larryle/MQTTBox/releases/download/v0.2.2/MQTTBox-0.2.2.AppImage) (102.8 MB)
-- **Ubuntu/Debian**: [MQTTBox_0.2.2_amd64.deb](https://github.com/larryle/MQTTBox/releases/download/v0.2.2/MQTTBox_0.2.2_amd64.deb) (93.7 MB)
+#### Supported Platforms
+- **macOS**: Intel and Apple Silicon (ARM64) support
+- **Windows**: 64-bit executable with NSIS installer  
+- **Linux**: AppImage and DEB package support
 
 #### All Releases
 - **View all releases**: [GitHub Releases](https://github.com/larryle/MQTTBox/releases)
