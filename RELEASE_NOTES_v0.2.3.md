@@ -49,10 +49,10 @@
 - **Coverage Reports**: Code coverage thresholds for critical components
 
 ### Google Analytics Integration
-- **Enhanced Tracking**: Comprehensive analytics for MQTT operations and user interactions
+- **Basic App Tracking**: Application usage and feature tracking
 - **Privacy Protection**: User consent dialog and data sanitization
-- **MQTT-Specific Events**: Connection, message, and feature usage tracking
-- **Performance Metrics**: Application performance and error tracking
+- **OS Information**: Operating system and platform tracking
+- **Error Tracking**: Application error monitoring
 - **Cross-Platform Support**: Works in both Electron and web environments
 
 ## 🛡️ Storage Protection Features
@@ -95,6 +95,7 @@
 - Enhanced fallback mechanisms for data recovery
 - Fixed Google Analytics loading in Electron environment
 - Improved analytics consent dialog handling
+- Simplified analytics to basic app and OS tracking only
 
 ## 📋 Installation Instructions
 1. Download the appropriate package for your platform

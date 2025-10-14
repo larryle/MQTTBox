@@ -264,23 +264,6 @@ class AnalyticsService {
     return userId;
   }
 
-  /**
-   * Sanitize host for privacy
-   */
-  sanitizeHost(host) {
-    if (!host) return 'unknown';
-    // Remove sensitive parts but keep useful info
-    return host.replace(/:\d+$/, ''); // Remove port
-  }
-
-  /**
-   * Sanitize topic for privacy
-   */
-  sanitizeTopic(topic) {
-    if (!topic) return 'unknown';
-    // Keep topic structure but remove sensitive data
-    return topic.replace(/\/[^\/]*$/g, '/***'); // Replace last segment
-  }
 
   /**
    * Sanitize error message
@@ -335,64 +318,26 @@ class AnalyticsService {
     console.log('[Analytics] Force enabled for testing');
   }
 
+
   /**
-   * Track MQTT connection events
+   * Track basic app usage
    */
-  trackMqttConnection(action, host, port, protocol) {
-    this.track('mqtt_connection', {
-      action: action, // 'connect', 'disconnect', 'error'
-      host: this.sanitizeHost(host),
-      port: port,
-      protocol: protocol
+  trackAppUsage(action, details = {}) {
+    this.track('app_usage', {
+      action: action,
+      platform: this.getPlatform(),
+      version: this.getAppVersion(),
+      ...details
     });
   }
 
   /**
-   * Track MQTT message events
+   * Track feature usage
    */
-  trackMqttMessage(action, topic, qos, retain) {
-    this.track('mqtt_message', {
-      action: action, // 'publish', 'subscribe', 'unsubscribe'
-      topic: this.sanitizeTopic(topic),
-      qos: qos,
-      retain: retain
-    });
-  }
-
-  /**
-   * Track feature usage with enhanced metrics
-   */
-  trackFeatureUsage(featureName, category, duration, success = true) {
+  trackFeatureUsage(featureName, success = true) {
     this.track('feature_used', {
       feature_name: featureName,
-      feature_category: category,
-      duration: duration,
       success: success,
-      platform: this.getPlatform(),
-      version: this.getAppVersion()
-    });
-  }
-
-  /**
-   * Track user interaction events
-   */
-  trackUserInteraction(interactionType, element, context) {
-    this.track('user_interaction', {
-      interaction_type: interactionType,
-      element: element,
-      context: context,
-      platform: this.getPlatform()
-    });
-  }
-
-  /**
-   * Track performance metrics
-   */
-  trackPerformance(metricName, value, unit) {
-    this.track('performance_metric', {
-      metric_name: metricName,
-      value: value,
-      unit: unit,
       platform: this.getPlatform(),
       version: this.getAppVersion()
     });
