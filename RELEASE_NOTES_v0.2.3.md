@@ -2,10 +2,11 @@
 
 ## 🚀 Major Updates
 
-### v0.2.3 - Internationalization & Storage Protection
+### v0.2.3 - Internationalization, Storage Protection & Analytics
 - **Complete English Translation**: All Chinese content translated to English
 - **Storage Protection Mechanism**: Comprehensive CI/CD protection against data loss
 - **Enhanced Testing Suite**: Unit tests for storage integrity and configuration
+- **Google Analytics Integration**: Enhanced analytics tracking with privacy protection
 - **Improved Documentation**: All documentation now in English
 
 ### Key Features
@@ -47,6 +48,13 @@
 - **Mock Services**: Comprehensive mocking for Electron and browser APIs
 - **Coverage Reports**: Code coverage thresholds for critical components
 
+### Google Analytics Integration
+- **Enhanced Tracking**: Comprehensive analytics for MQTT operations and user interactions
+- **Privacy Protection**: User consent dialog and data sanitization
+- **MQTT-Specific Events**: Connection, message, and feature usage tracking
+- **Performance Metrics**: Application performance and error tracking
+- **Cross-Platform Support**: Works in both Electron and web environments
+
 ## 🛡️ Storage Protection Features
 
 ### Configuration Validation
@@ -85,6 +93,8 @@
 - Resolved data migration edge cases
 - Improved error handling in storage services
 - Enhanced fallback mechanisms for data recovery
+- Fixed Google Analytics loading in Electron environment
+- Improved analytics consent dialog handling
 
 ## 📋 Installation Instructions
 1. Download the appropriate package for your platform
