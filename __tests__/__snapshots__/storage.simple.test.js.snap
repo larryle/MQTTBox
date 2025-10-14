@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Storage Protection - Simplified should have storage configuration snapshot 1`] = `
+{
+  "driver": "LOCALSTORAGE",
+  "hasBackupSupport": true,
+  "hasRequiredMethods": true,
+  "name": "MQTT_CLIENT_SETTINGS",
+  "supportsLegacyData": true,
+}
+`;

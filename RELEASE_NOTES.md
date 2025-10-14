@@ -1,6 +1,12 @@
 ## 🚀 Major Updates
 
-### Build System Migration
+### v0.2.3 - Internationalization & Storage Protection
+- **Complete English Translation**: All Chinese content translated to English
+- **Storage Protection Mechanism**: Comprehensive CI/CD protection against data loss
+- **Enhanced Testing Suite**: Unit tests for storage integrity and configuration
+- **Improved Documentation**: All documentation now in English
+
+### Build System Migration (v0.2.2)
 - **Migrated from Gulp to Vite**: Modern build system with faster compilation
 - **Fixed static resource loading**: jQuery, Bootstrap, and FontAwesome now load correctly
 - **Improved build performance**: 4-5x faster build times compared to Gulp
@@ -15,19 +21,20 @@
 - ✅ **No white screen issues**: Application loads properly with all resources
 - ✅ **Cross-platform compatibility**: Works on all major operating systems
 - ✅ **Auto-update support**: Built-in update mechanism for seamless upgrades
+- ✅ **Storage Protection**: CI/CD checks prevent accidental data loss
 
 ## 📦 Distribution Files
 
 ### macOS
-- `MQTTBox-0.2.2.dmg` (Intel Mac)
-- `MQTTBox-0.2.2-arm64.dmg` (Apple Silicon Mac)
+- `MQTTBox-0.2.3.dmg` (Intel Mac)
+- `MQTTBox-0.2.3-arm64.dmg` (Apple Silicon Mac)
 
 ### Windows
-- `MQTTBox-0.2.2-x64.exe` (64-bit Windows)
+- `MQTTBox-0.2.3-x64.exe` (64-bit Windows)
 
 ### Linux
-- `MQTTBox-0.2.2.AppImage` (Universal Linux)
-- `MQTTBox_0.2.2_amd64.deb` (Ubuntu/Debian)
+- `MQTTBox-0.2.3.AppImage` (Universal Linux)
+- `MQTTBox_0.2.3_amd64.deb` (Ubuntu/Debian)
 
 ## 🔧 Technical Improvements
 
@@ -101,6 +108,6 @@ For issues, feature requests, or questions:
 - Email: linfengle@gmail.com
 
 ---
-**Build Date**: October 13, 2025  
-**Version**: 0.2.2  
+**Build Date**: January 2025  
+**Version**: 0.2.3  
 **Compatibility**: macOS 10.14+, Windows 7 SP1+, Linux (Ubuntu 18.04+)

@@ -1,0 +1,4 @@
+Follow these rules:
+
+1: Generate or modify documents and code only in English
+2: Do not modify storage-related code
