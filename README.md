@@ -63,22 +63,27 @@ Make sure you have [Node.js](https://nodejs.org/en/) installed and follow below 
 
 - `npm install`
 
-- `Open /node_modules/mqtt/lib/connect/ws.js file and goto line 56 or where ever you find below code.`
-    else {
-        throw new Error('Could not determine host. Specify host manually.')
-    }
- `Remove this else block completely. We need this step to make mqtt.js works with webworkers`.
+> **⚠️ Installation Note**: If you encounter dependency conflicts during `npm install`, use the following command instead:
+> ```bash
+> npm install --legacy-peer-deps
+> ```
+> This resolves React version conflicts between different packages.
 
-Thats it !!! Your project is setup. Execute below commands in your current folder (MQTTBox) as per your app requirements.
+That's it! Your project is set up. Execute the following commands in your current folder (MQTTBox) as per your app requirements.
 
-###### Web App Builds
-- `npm run build` - Generates `build` folder with all compiled static web assets in your current directory (MQTTBox). You can deploy `build` in you web/app server.
+###### Electron App Development
+- `npm run build` - Generates `build` folder with all compiled static web assets for the Electron app.
 
-- `npm start` - Live development mode. Use while development to see live reload of your web app when changes done in code.
+- `npm run electron` - Start the Electron application in development mode.
 
-By default `master` branch has MQTTBox web app. Please check other MQTTBox branches for other platform apps.
- 
+- `npm start` - Live development mode for web assets. Use while development to see live reload of your web app when changes are made in code.
+
+###### Building Distribution Packages
+- `npm run dist:mac` - Build macOS DMG package (Intel and ARM64)
+- `npm run dist:win` - Build Windows NSIS installer
+- `npm run dist:linux` - Build Linux AppImage and DEB packages
+
 NOTE: 
-1.Web App supports only Websockets because of browser limitations.
-2.We are working to make all apps to look in sync.
-3.We are working to make all features avaliable to all platforms.
+1. This is an Electron application that supports both TCP and WebSocket MQTT connections.
+2. The app runs natively on macOS, Windows, and Linux platforms.
+3. All MQTT features are available across all platforms.
