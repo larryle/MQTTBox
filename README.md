@@ -2,6 +2,16 @@
 #### Developers helper program to create and test MQTT connectivity protocol.
 Supercharge your MQTT workflow with MQTTBox Apps available on Chrome, Linux, Mac, Web and Windows! Build, test, and document your MQTT connectivity protocol.
 
+> **📋 Project Information**
+> 
+> This project is based on the original [MQTTBox](https://github.com/workswithweb/MQTTBox) by workswithweb, with significant enhancements and improvements including:
+> - Modern build system migration (Gulp → Vite)
+> - Enhanced data persistence and storage protection
+> - Apple code signing and notarization support
+> - Multi-platform build support (macOS, Windows, Linux)
+> - v0.2.1 compatibility and automatic data migration
+> - Comprehensive testing suite
+
 
 ### 📥 Download Links
 
@@ -38,7 +48,11 @@ Supercharge your MQTT workflow with MQTTBox Apps available on Chrome, Linux, Mac
 - View load test data 
 - View load test results in graphs
 
-Please report Feature Requests, Enhancements or Bugs to linfengle@gmail.com or on [Github](https://github.com/issues)
+Please report Feature Requests, Enhancements or Bugs to linfengle@gmail.com or on [Github](https://github.com/larryle/MQTTBox/issues)
+
+## Acknowledgments
+
+This project is a fork and enhancement of the original [MQTTBox](https://github.com/workswithweb/MQTTBox) project by workswithweb. We extend our gratitude to the original developers for creating this excellent MQTT testing tool.
 
 ## Getting Started
 Make sure you have [Node.js](https://nodejs.org/en/) installed and follow below steps to build and execute.
