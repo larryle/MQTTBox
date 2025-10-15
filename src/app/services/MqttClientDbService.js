@@ -5,16 +5,19 @@ import _ from 'lodash';
 class MqttClientDbWorker { 
 
     constructor() {
-        // Prefer LocalStorage in Electron to avoid IndexedDB/WebSQL driver issues
+        // Use IndexedDB to access existing data
         try {
             this.db = localforage.createInstance({
                 name: "MQTT_CLIENT_SETTINGS",
-                driver: localforage.LOCALSTORAGE
+                driver: localforage.INDEXEDDB
             });
         } catch(e) {
             console.error('[MqttClientDbService] Error creating localforage instance:', e);
             this.db = null;
         }
+
+        // Auto-compatibility with v0.2.1 data
+        this.setupV021Compatibility();
 
         // Fallback to window.localStorage if localforage drivers are not available
         if(!this.db || !this.db.setItem) {
@@ -49,59 +52,36 @@ class MqttClientDbWorker {
                 }
             } catch(_) {}
         }
+        
+        // If primary store is empty, attempt one-time import from window.localStorage (older runs)
         try {
-            // Listen for migration payload from main process (Electron)
-            const electron = require('electron');
-            if (electron && electron.ipcRenderer) {
-                console.log('[renderer][migration] setting up listener');
-                electron.ipcRenderer.on('migration-data', function(event, payload){
-                    console.log('[renderer][migration] received payload:', payload);
-                    if(payload && payload.service==='MQTT_CLIENT_SETTINGS' && Array.isArray(payload.items)){
-                        console.log('[renderer][migration] processing', payload.items.length, 'items');
-                        for(var i=0;i<payload.items.length;i++){
-                            (function(item){
-                                if(!(item && item.mcsId)) return;
-                                console.log('[renderer][migration] processing item:', item.mqttClientName, item.mcsId, 'willTopic:', item.willTopic, 'willPayload:', item.willPayload);
-                                // Map legacy nested will -> top-level
+            if (this.db && this.db.length) {
+                this.db.length().then(function(count){
+                    if (count === 0 && typeof window !== 'undefined' && window.localStorage) {
+                        try {
+                            var imported = 0;
+                            for (var i=0;i<window.localStorage.length;i++) {
+                                var k = window.localStorage.key(i);
+                                if(!k) continue;
                                 try {
-                                    if (item.will && typeof item.will === 'object') {
-                                        if (item.willTopic == null && item.will.topic != null) item.willTopic = item.will.topic;
-                                        if (item.willPayload == null && item.will.payload != null) item.willPayload = '' + item.will.payload;
-                                        if (item.willQos == null && item.will.qos != null) item.willQos = item.will.qos;
-                                        if (item.willRetain == null && item.will.retain != null) item.willRetain = !!item.will.retain;
+                                    var v = JSON.parse(window.localStorage.getItem(k));
+                                    if (v && v.mcsId) {
+                                        imported++;
+                                        this.db.setItem(v.mcsId, v);
                                     }
-                                    if (item.willPayload == null) item.willPayload = '';
-                                    if (item.willTopic == null) item.willTopic = '';
-                                    if (item.willQos == null) item.willQos = 0;
-                                    if (item.willRetain == null) item.willRetain = false;
                                 } catch(_) {}
-
-                                // Skip if already exists (by mcsId)
-                                try {
-                                    if (this.db && this.db.getItem) {
-                                        this.db.getItem(item.mcsId).then(function(existing){
-                                            if (existing) return; // already present, skip
-                                            try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
-                                        }.bind(this)).catch(function(){
-                                            try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
-                                        });
-            } else {
-                                        try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
-                                    }
-                                } catch(_) {
-                                    try { MqttClientActions.saveMqttClientSettings(item); } catch(_) {}
-                                }
-                            }.bind(this))(payload.items[i]);
-                        }
+                            }
+                            if (imported>0) {
+                                try { console.log('[MqttClientDbService] Imported', imported, 'clients from localStorage'); } catch(_){ }
+                            }
+                        } catch(_) {}
                     }
-                }.bind(this));
+                }.bind(this)).catch(function(){});
             }
-        } catch(e) {}
-
-        // Use original storage configuration - no migration needed
+        } catch(_) {}
     }
 
-    saveMqttClientSettings(obj) { 
+    saveMqttClientSettings(obj) {
         if (!this.db || !this.db.setItem) return Promise.resolve();
         return this.db.setItem(obj.mcsId, obj);
     }
@@ -141,6 +121,103 @@ class MqttClientDbWorker {
             return Promise.resolve();
         }
         return this.db.removeItem(mcsId);
+    }
+
+    // v0.2.1 compatibility methods
+    setupV021Compatibility() {
+        console.log('[MqttClientDbService] Setting up v0.2.1 compatibility...');
+        
+        // Check if we need to migrate from v0.2.1
+        this.checkAndMigrateV021Data();
+    }
+
+    async checkAndMigrateV021Data() {
+        try {
+            // Check if current store is empty
+            const currentCount = await this.getCurrentStoreCount();
+            if (currentCount > 0) {
+                console.log('[MqttClientDbService] Current store has data, skipping v0.2.1 migration');
+                return;
+            }
+
+            // Try to find v0.2.1 data in localStorage
+            const v021Data = this.findV021DataInLocalStorage();
+            if (v021Data && v021Data.length > 0) {
+                console.log(`[MqttClientDbService] Found ${v021Data.length} clients from v0.2.1, migrating...`);
+                await this.migrateV021Data(v021Data);
+            }
+        } catch (error) {
+            console.error('[MqttClientDbService] Error in v0.2.1 compatibility check:', error);
+        }
+    }
+
+    async getCurrentStoreCount() {
+        if (!this.db || !this.db.length) {
+            return 0;
+        }
+        try {
+            return await this.db.length();
+        } catch (error) {
+            console.error('[MqttClientDbService] Error getting store count:', error);
+            return 0;
+        }
+    }
+
+    findV021DataInLocalStorage() {
+        if (!window || !window.localStorage) {
+            return null;
+        }
+
+        const v021Clients = [];
+        try {
+            // Look for v0.2.1 client data in localStorage
+            for (let i = 0; i < window.localStorage.length; i++) {
+                const key = window.localStorage.key(i);
+                if (!key) continue;
+
+                try {
+                    const value = JSON.parse(window.localStorage.getItem(key));
+                    // Check if this looks like a v0.2.1 client
+                    if (value && value.mcsId && value.mqttClientName) {
+                        v021Clients.push(value);
+                    }
+                } catch (e) {
+                    // Ignore non-JSON values
+                }
+            }
+        } catch (error) {
+            console.error('[MqttClientDbService] Error scanning localStorage:', error);
+        }
+
+        return v021Clients;
+    }
+
+    async migrateV021Data(v021Clients) {
+        if (!this.db || !this.db.setItem) {
+            console.error('[MqttClientDbService] Cannot migrate: database not available');
+            return;
+        }
+
+        let migratedCount = 0;
+        for (const client of v021Clients) {
+            try {
+                await this.db.setItem(client.mcsId, client);
+                migratedCount++;
+                console.log(`[MqttClientDbService] Migrated client: ${client.mqttClientName}`);
+            } catch (error) {
+                console.error(`[MqttClientDbService] Error migrating client ${client.mcsId}:`, error);
+            }
+        }
+
+        if (migratedCount > 0) {
+            console.log(`[MqttClientDbService] Successfully migrated ${migratedCount} clients from v0.2.1`);
+            // Trigger a reload of the client list
+            setTimeout(() => {
+                if (window.MqttClientActions) {
+                    window.MqttClientActions.loadAllMqttClients();
+                }
+            }, 100);
+        }
     }
 
 }

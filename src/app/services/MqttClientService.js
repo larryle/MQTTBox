@@ -20,62 +20,14 @@ class MqttClientService extends Events.EventEmitter {
 
         this.registerToAppDispatcher();
         
-        // Listen for data migration completion events
-        this.setupMigrationListener();
+        // Load data immediately without migration delays
+        console.log('[MqttClientService] Starting initial data load...');
+        this.syncMqttClientSettingsCache();
         
-        // Delay data loading to ensure migration completion
-        setTimeout(() => {
-            console.log('[MqttClientService] Starting initial data load...');
-            this.syncMqttClientSettingsCache();
-        }, 1000);
+        // Expose MqttClientActions for v0.2.1 compatibility
+        this.setupV021Compatibility();
     }
 
-    setupMigrationListener() {
-        // Listen for data migration completion events
-        console.log('[MqttClientService] Setting up migration listener...');
-        try {
-            const electron = require('electron');
-            console.log('[MqttClientService] Electron available:', !!electron);
-            console.log('[MqttClientService] ipcRenderer available:', !!(electron && electron.ipcRenderer));
-            
-            if (electron && electron.ipcRenderer) {
-                console.log('[MqttClientService] Registering migration-data listener...');
-                electron.ipcRenderer.on('migration-data', (event, payload) => {
-                    console.log('[MqttClientService] Migration data received:', payload);
-                    if (payload && payload.service === 'MQTT_CLIENT_SETTINGS' && Array.isArray(payload.items)) {
-                        console.log('[MqttClientService] Processing', payload.items.length, 'migrated items');
-                        // Store migrated data directly
-                        this.storeMigratedData(payload.items);
-                    }
-                });
-                console.log('[MqttClientService] Migration listener registered successfully');
-            } else {
-                console.log('[MqttClientService] ipcRenderer not available');
-            }
-        } catch (e) {
-            console.log('[MqttClientService] Error setting up migration listener:', e.message);
-        }
-    }
-
-    storeMigratedData(items) {
-        console.log('[MqttClientService] Storing migrated data...');
-        const dbService = new MqttClientDbService();
-        items.forEach(item => {
-            if (item && item.mcsId) {
-                dbService.saveMqttClientSettings(item).then(() => {
-                    console.log('[MqttClientService] Stored migrated item:', item.mcsId);
-                }).catch(err => {
-                    console.error('[MqttClientService] Failed to store migrated item:', err);
-                });
-            }
-        });
-        
-        // Reload data after storage completion
-        setTimeout(() => {
-            console.log('[MqttClientService] Reloading cache after migration...');
-            this.syncMqttClientSettingsCache();
-        }, 1000);
-    }
 
     registerToAppDispatcher() { 
         AppDispatcher.register(function(action) {
@@ -464,6 +416,20 @@ class MqttClientService extends Events.EventEmitter {
                 this.emitChange(MqttClientConstants.EVENT_MQTT_CLIENT_SUBSCRIBED_DATA_RECIEVED,{mcsId:subData.mcsId,subId:subData.subId});
             }
         }.bind(this));
+    }
+
+    // v0.2.1 compatibility methods
+    setupV021Compatibility() {
+        // Expose MqttClientActions on window for v0.2.1 compatibility
+        if (typeof window !== 'undefined') {
+            window.MqttClientActions = {
+                loadAllMqttClients: () => {
+                    console.log('[MqttClientService] v0.2.1 compatibility: reloading clients...');
+                    this.syncMqttClientSettingsCache();
+                }
+            };
+            console.log('[MqttClientService] v0.2.1 compatibility setup complete');
+        }
     }
 }
 

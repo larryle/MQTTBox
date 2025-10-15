@@ -1,6 +1,6 @@
 {
   "name": "MQTTBox",
-  "version": "0.2.3",
+  "version": "0.2.2",
   "description": "MQTTBox - Developers helper program to create and test MQTT connectivity protocol.",
   "author": {
     "name": "Larry",
@@ -24,6 +24,7 @@
     "dist:mac": "electron-builder --mac dmg",
     "dist:mac:x64": "electron-builder --mac dmg --x64",
     "dist:mac:arm64": "electron-builder --mac dmg --arm64",
+    "dist:mac:arm64:unsigned": "electron-builder --mac dmg --arm64 --config.mac.identity=null --config.mac.gatekeeperAssess=false",
     "dist:win": "electron-builder --win --config.compression=store && rm -rf dist/win-unpacked && rm -f dist/*.blockmap",
     "dist:win:x64": "electron-builder --win --x64 --config.compression=store && rm -rf dist/win-unpacked && rm -f dist/*.blockmap",
     "dist:win:ia32": "electron-builder --win --ia32 --config.compression=store && rm -rf dist/win-unpacked && rm -f dist/*.blockmap",
@@ -38,6 +39,7 @@
     "@babel/core": "^7.24.9",
     "@babel/preset-env": "^7.28.3",
     "@babel/preset-react": "^7.24.7",
+    "@electron/notarize": "^2.5.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@vitejs/plugin-legacy": "^5.4.2",
     "@vitejs/plugin-react": "^4.3.1",
@@ -52,6 +54,7 @@
     "browserify": "13.1.1",
     "electron": "^22.3.27",
     "electron-builder": "^24.9.1",
+    "electron-notarize": "^1.2.2",
     "electron-packager": "^17.1.2",
     "fancy-log": "^2.0.0",
     "gulp": "3.9.1",
@@ -101,11 +104,17 @@
     "mac": {
       "category": "public.app-category.developer-tools",
       "icon": "src/www/images/icon.icns",
+      "identity": null,
+      "gatekeeperAssess": false,
+      "hardenedRuntime": true,
+      "entitlements": "scripts/entitlements.plist",
+      "entitlementsInherit": "scripts/entitlements.plist",
       "target": [
         {
           "target": "dmg",
           "arch": [
-            "x64"
+            "x64",
+            "arm64"
           ]
         }
       ]
@@ -163,9 +172,11 @@
     },
     "buildDependenciesFromSource": false,
     "nodeGypRebuild": false,
-    "buildVersion": "0.2.3",
+    "buildVersion": "0.2.2",
     "directories": {
       "output": "dist"
-    }
+    },
+    "afterSign": "scripts/notarize.js",
+    "afterAllArtifactBuild": "scripts/notarize.js"
   }
 }

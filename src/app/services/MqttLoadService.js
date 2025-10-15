@@ -19,7 +19,7 @@ class MqttLoadService extends Events.EventEmitter {
         this.syncMqttLoadSettingsCache();
     }
 
-    registerToAppDispatcher() { 
+    registerToAppDispatcher() {
         AppDispatcher.register(function(action) {
             switch(action.actionType) {
                 case MqttLoadConstants.ACTION_SAVE_MQTT_LOAD:
@@ -39,7 +39,7 @@ class MqttLoadService extends Events.EventEmitter {
         }.bind(this));
     }
 
-    syncMqttLoadSettingsCache() { 
+    syncMqttLoadSettingsCache() {
         MqttLoadDbService.getAllMqttLoadSettings()
         .then(function(mqttLoadList) {
             if(mqttLoadList!=null && mqttLoadList.length>0) {
@@ -54,7 +54,7 @@ class MqttLoadService extends Events.EventEmitter {
         }.bind(this));
     }
 
-    saveMqttLoadSettings(loadObj) { 
+    saveMqttLoadSettings(loadObj) {
         var dbLoadObj = this.mqttLoadSettingObjs[loadObj.mcsId];
         if(dbLoadObj == null) {
             dbLoadObj = new MqttLoadSettings();
@@ -86,7 +86,7 @@ class MqttLoadService extends Events.EventEmitter {
         }
     }
 
-    getAllMqttLoadSettings() { 
+    getAllMqttLoadSettings() {
         return _.values(this.mqttLoadSettingObjs);
     }
 
@@ -94,19 +94,19 @@ class MqttLoadService extends Events.EventEmitter {
         return this.mqttLoadSettingObjs[mcsId];
     }
 
-    emitChange(event,data) { 
+    emitChange(event,data) {
         this.emit(event,data);
     }
 
-    addChangeListener(event,callback) { 
+    addChangeListener(event,callback) {
         this.on(event,callback);
     }
 
-    removeChangeListener(event,callback) { 
+    removeChangeListener(event,callback) {
         this.removeListener(event,callback);
     }
 
-    startMqttLoadTest(mcsId) { 
+    startMqttLoadTest(mcsId) {
         var loadObj = this.getMqttLoadSettingsByMcsId(mcsId);
         if(loadObj!=null) {
             var instances = _.values(loadObj.instances);
@@ -142,7 +142,7 @@ class MqttLoadService extends Events.EventEmitter {
         }
     }
 
-    stopMqttLoadTest(mcsId) { 
+    stopMqttLoadTest(mcsId) {
         var loadObj = this.getMqttLoadSettingsByMcsId(mcsId);
         if(loadObj!=null) {
             var instances = _.values(loadObj.instances);
@@ -161,7 +161,7 @@ class MqttLoadService extends Events.EventEmitter {
         }
     }
 
-    updateStatusMessage(data) { 
+    updateStatusMessage(data) {
         var mqttLoadSettingObj = this.mqttLoadSettingObjs[data.mcsId];
         if(mqttLoadSettingObj!=null) {
             var instanceObj = mqttLoadSettingObj.instances[data.iId];
@@ -179,7 +179,7 @@ class MqttLoadService extends Events.EventEmitter {
         }
     }
 
-    updateLoadTestMetadataAfterComplete(data) { 
+    updateLoadTestMetadataAfterComplete(data) {
         MqttLoadDbService.saveMqttLoadArchiveDataByIId(data.iId,data.archiveData);
         var mqttLoadSettingObj = this.mqttLoadSettingObjs[data.mcsId];
         if(mqttLoadSettingObj!=null) {
@@ -199,7 +199,7 @@ class MqttLoadService extends Events.EventEmitter {
         }
     }
 
-    processEvents(eventObj) { 
+    processEvents(eventObj) {
         switch(eventObj.event) {
             case MqttLoadConstants.EVENT_MQTT_LOAD_STATUS_MESSAGE:
                 this.updateStatusMessage(eventObj.data);
@@ -211,7 +211,7 @@ class MqttLoadService extends Events.EventEmitter {
         }
     }
 
-    getMqttLoadDataByIIds(iIds) { 
+    getMqttLoadDataByIIds(iIds) {
         return MqttLoadDbService.getMqttLoadDataByIIds(iIds);
     }
 }

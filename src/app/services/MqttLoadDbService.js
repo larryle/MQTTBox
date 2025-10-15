@@ -1,7 +1,7 @@
 import localforage from 'localforage';
 import _ from 'lodash';
 
-class MqttLoadDbService {  
+class MqttLoadDbService {
 
     constructor() {
         try {
@@ -41,12 +41,12 @@ class MqttLoadDbService {  
         }
     }
 
-    saveMqttLoadSettings(obj) { 
+    saveMqttLoadSettings(obj) {
         if (!this.loadSettingsDb || !this.loadSettingsDb.setItem) return Promise.resolve();
         return this.loadSettingsDb.setItem(obj.mcsId, obj);
     }
 
-    getAllMqttLoadSettings() { 
+    getAllMqttLoadSettings() {
         var mqttLoadSettingsList = [];
         if (!this.loadSettingsDb || !this.loadSettingsDb.iterate) return Promise.resolve([]);
         return this.loadSettingsDb.iterate(function(value, key, iterationNumber) {
