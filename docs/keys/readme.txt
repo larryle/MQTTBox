@@ -1,14 +1,14 @@
 App Store Connect API Key Usage Guide (Updated: Team Key, Notarization, DMG-only Release)
 
-I. Purpose
+1. Purpose
 - For automation tools (such as notarytool, notarization/upload scripts, CI builds) to access App Store Connect as a team.
 - Alternative to Apple ID + App-specific password method, more secure and can assign minimal permissions by environment.
 
-II. Prerequisites
+2. Prerequisites
 - Paid Apple Developer Program account.
 - Your role in App Store Connect is Account Holder or Admin (to create keys).
 
-III. Generate Team API Key (Recommended Team Keys)
+3. Generate Team API Key (Recommended Team Keys)
 1) Login to App Store Connect → Users and Access → Integrations → App Store Connect API.
 2) Select "Team Keys" tab, click "Generate API Key".
 3) Role recommendation: App Manager (minimum available permissions). If higher permissions needed, choose Admin.
@@ -17,7 +17,7 @@ III. Generate Team API Key (Recommended Team Keys)
    - Issuer ID (team fixed UUID)
    - Private key file .p8 (downloadable only once, store securely, never commit to repository)
 
-IV. Configure notarytool credentials on local machine
+4. Configure notarytool credentials on local machine
 Assume using keychain profile name: AC_NOTARY
 
 Method A: Using API Key (Recommended)
@@ -37,13 +37,13 @@ export APPLE_TEAM_ID=<TEAM_ID>   # e.g.: 6J7RFSG6F3 (Circumtec team)
 # Optional: if not using default name
 export APPLE_NOTARY_KEYCHAIN_PROFILE=AC_NOTARY
 
-V. Certificates and Signing (Developer ID Application)
+5. Certificates and Signing (Developer ID Application)
 - In Xcode → Settings/Preferences → Accounts → Select team → Manage Certificates… → "+" to generate "Developer ID Application".
 - Or apply with CSR on Developer website and import to login keychain.
 - This project can auto-discover signing; if explicit specification needed:
   export CSC_NAME="Circumtec Pty Ltd"  # Certificate display name, without "Developer ID Application:" prefix
 
-VI. Build, Notarization and Staple (DMG output only, no ZIP)
+6. Build, Notarization and Staple (DMG output only, no ZIP)
 - Project configured with electron-builder afterSign hook (scripts/notarize.js), automatically notarizes .app during build.
 - After generating DMG, need to notarize DMG itself once more, then staple:
   1) Build:
@@ -55,23 +55,23 @@ VI. Build, Notarization and Staple (DMG output only, no ZIP)
      npm run staple:mac
 
 
-VII. Key Rotation and Revocation
+7. Key Rotation and Revocation
 - In App Store Connect → Team Keys page:
   - Revoke: Immediate invalidation (CI needs to switch to new Key)
   - Recommend creating different Keys for different environments/pipelines, minimal permissions, regular rotation
 - .p8 loss cannot be recovered, only Revoke and regenerate
 
-VIII. Security Recommendations
+8. Security Recommendations
 - Don't commit .p8, passwords and other sensitive information to repository, don't upload to Release.
 - CI uses platform Secrets/Variables to manage KEY_ID, ISSUER_ID; .p8 injected via Secret/Keychain.
 - Scripts and logs avoid printing sensitive variable values.
 
-IX. Common Issues
+9. Common Issues
 - 401/Insufficient permissions: Check if key role is App Manager/Admin; if Issuer/Key ID corresponds to current team.
 - notarytool can't find credentials: Confirm AC_NOTARY is written to keychain, or pass correct --keychain-profile.
 - Notarization passed but DMG still shows warning when opened: Missing staple; run npm run staple:mac and verify.
 
-X. Details:
+10. Details:
 
 name: App Manager
 Key ID: KD893Y374P
