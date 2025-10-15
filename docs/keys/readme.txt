@@ -1,4 +1,4 @@
-App Store Connect API Key Usage Guide (Updated: Team Key, Notarization, DMG-only Release, S3 Deployment)
+App Store Connect API Key Usage Guide (Updated: Team Key, Notarization, DMG-only Release)
 
 I. Purpose
 - For automation tools (such as notarytool, notarization/upload scripts, CI builds) to access App Store Connect as a team.
@@ -54,32 +54,24 @@ VI. Build, Notarization and Staple (DMG output only, no ZIP)
   3) Staple and verify:
      npm run staple:mac
 
-VII. Deploy to S3 (circumtec.com/download/)
-- Script: scripts/deploy.sh (uploads .dmg only)
-- Usage:
-  bash scripts/deploy.sh
-- Options:
-  - S3_URI custom upload path: S3_URI=s3://circumtec.com/download/releases/ bash scripts/deploy.sh
-  - DRY_RUN=true preview only without upload: DRY_RUN=true bash scripts/deploy.sh
-- Note: When Bucket has BlockPublicAcls enabled, won't add public-read; set public access via Bucket Policy/CloudFront.
 
-VIII. Key Rotation and Revocation
+VII. Key Rotation and Revocation
 - In App Store Connect → Team Keys page:
   - Revoke: Immediate invalidation (CI needs to switch to new Key)
   - Recommend creating different Keys for different environments/pipelines, minimal permissions, regular rotation
 - .p8 loss cannot be recovered, only Revoke and regenerate
 
-IX. Security Recommendations
+VIII. Security Recommendations
 - Don't commit .p8, passwords and other sensitive information to repository, don't upload to Release.
 - CI uses platform Secrets/Variables to manage KEY_ID, ISSUER_ID; .p8 injected via Secret/Keychain.
 - Scripts and logs avoid printing sensitive variable values.
 
-X. Common Issues
+IX. Common Issues
 - 401/Insufficient permissions: Check if key role is App Manager/Admin; if Issuer/Key ID corresponds to current team.
 - notarytool can't find credentials: Confirm AC_NOTARY is written to keychain, or pass correct --keychain-profile.
 - Notarization passed but DMG still shows warning when opened: Missing staple; run npm run staple:mac and verify.
 
-IX: Details:
+X. Details:
 
 name: App Manager
 Key ID: KD893Y374P
